@@ -21,6 +21,10 @@ namespace Galaga {
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
 
+        private AnimationContainer enemyExplosions;
+        private List<Image> explosionStrides;
+        private const int EXPLOSION_LENGTH_MS = 500;
+
         public Game() {
             window = new Window("Galaga", 500, 500);
             gameTimer = new GameTimer(30, 30);
@@ -46,6 +50,11 @@ namespace Galaga {
             //PlayerShot
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
+        
+            //Explosions
+            enemyExplosions = new AnimationContainer(numEnemies);
+            explosionStrides = ImageStride.CreateStrides(8,Path.Combine("Assets", "Images", "Explosion.png"));
+        
         }
 
         public void KeyPress(string key) {
@@ -56,9 +65,6 @@ namespace Galaga {
                     break;
                 case "KEY_RIGHT":
                     player.SetMoveRight(true);
-                    break;
-                case "KEY_ESCAPE":
-                    window.CloseWindow();
                     break;
                 default:
                     break;
@@ -73,6 +79,9 @@ namespace Galaga {
                     break;
                 case "KEY_RIGHT":
                     player.SetMoveRight(false);
+                    break;
+                case "KEY_ESCAPE":
+                    window.CloseWindow();
                     break;
                 case "KEY_SPACE":
                     PlayerShot shot = new PlayerShot(player.GetPosition(), playerShotImage);
@@ -109,11 +118,21 @@ namespace Galaga {
                         CollisionData col = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(), enemy.Shape);
                         if (col.Collision) {
                             shot.DeleteEntity();
+                            AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
                             enemy.DeleteEntity();
                         }
                     });
                 }
             });
+        }
+
+        public void AddExplosion(Vec2F position, Vec2F extent) {
+            //TODO: add explosion to the AnimationContainer
+            var iS = new ImageStride(EXPLOSION_LENGTH_MS/8, 
+                ImageStride.CreateStrides(8, Path.Combine("Assets", "Images", "Explosion.png")));
+
+            StationaryShape ss = new StationaryShape(position, extent);
+            enemyExplosions.AddAnimation(ss, EXPLOSION_LENGTH_MS, iS);
         }
 
 
@@ -139,6 +158,7 @@ namespace Galaga {
 
                     enemies.RenderEntities();
                     playerShots.RenderEntities();
+                    enemyExplosions.RenderAnimations();
 
                     window.SwapBuffers();
                 }
