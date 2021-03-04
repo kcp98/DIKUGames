@@ -22,7 +22,7 @@ namespace Galaga {
         }
 
         // move the shape and guard against the window borders
-        public void Move() { // FIX BOUNDARY
+        public void Move() {
             if (this.shape.Position.X >= 0.94f) {
                 this.shape.Position.X = 0.94f;
             }
@@ -47,6 +47,10 @@ namespace Galaga {
             this.shape.MoveX(moveRight + moveLeft);
             this.moveLeft = 0.0f;
             this.moveRight = 0.0f;
+        }
+
+        public Vec2F GetPosition() {
+            return this.shape.Position;
         }
     }
 }

@@ -6,6 +6,7 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using System.Collections.Generic;
 using DIKUArcade.EventBus;
+using DIKUArcade.Physics;
 
 namespace Galaga {
     // NOTE: We implement the IGameEventProcessor interface!
@@ -17,8 +18,8 @@ namespace Galaga {
 
         private EntityContainer<Enemy> enemies;
 
-        /*private EntityContainer<PlayerShot> playerShots;
-        private IBaseImage playerShotImage;*/
+        private EntityContainer<PlayerShot> playerShots;
+        private IBaseImage playerShotImage;
 
         public Game() {
             window = new Window("Galaga", 500, 500);
@@ -43,8 +44,8 @@ namespace Galaga {
             }
 
             //PlayerShot
-            /*playerShots = new EntityContainer<PlayerShot>();
-            playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));*/
+            playerShots = new EntityContainer<PlayerShot>();
+            playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
         }
 
         public void KeyPress(string key) {
@@ -73,6 +74,10 @@ namespace Galaga {
                 case "KEY_RIGHT":
                     player.SetMoveRight(false);
                     break;
+                case "KEY_SPACE":
+                    PlayerShot shot = new PlayerShot(player.GetPosition(), playerShotImage);
+                    playerShots.AddEntity(shot);
+                    break;
                 default:
                     break;
             }
@@ -90,17 +95,26 @@ namespace Galaga {
             }
         } 
 
-        /*private void IterateShot(){
+        private void IterateShot(){
             playerShots.Iterate(shot => {
-                if(){
+                // TODO: move the shot's shape
+                shot.Move();
+                if ( shot.Shape.Position.Y >= 1f ) {
+                    shot.DeleteEntity();
+                    // TODO: delete shot
 
                 }else{
                     enemies.Iterate(enemy =>{
-
+                        // TODO: if collision btw shot and enemy -> delete both
+                        CollisionData col = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(), enemy.Shape);
+                        if (col.Collision) {
+                            shot.DeleteEntity();
+                            enemy.DeleteEntity();
+                        }
                     });
                 }
             });
-        }*/
+        }
 
 
         public void Run() {
@@ -113,6 +127,7 @@ namespace Galaga {
                     // update game logic here...
                     eventBus.ProcessEvents();
                     player.Move();
+                    IterateShot();
                 
                 }
             
@@ -123,6 +138,7 @@ namespace Galaga {
                     this.player.Render();
 
                     enemies.RenderEntities();
+                    playerShots.RenderEntities();
 
                     window.SwapBuffers();
                 }
