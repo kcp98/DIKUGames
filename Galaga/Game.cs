@@ -17,6 +17,9 @@ namespace Galaga {
 
         private EntityContainer<Enemy> enemies;
 
+        /*private EntityContainer<PlayerShot> playerShots;
+        private IBaseImage playerShotImage;*/
+
         public Game() {
             window = new Window("Galaga", 500, 500);
             gameTimer = new GameTimer(30, 30);
@@ -38,6 +41,10 @@ namespace Galaga {
                     new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), new Vec2F(0.1f, 0.1f)),
                         new ImageStride(80, images)));
             }
+
+            //PlayerShot
+            /*playerShots = new EntityContainer<PlayerShot>();
+            playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));*/
         }
 
         public void KeyPress(string key) {
@@ -82,6 +89,18 @@ namespace Galaga {
                     break;
             }
         } 
+
+        /*private void IterateShot(){
+            playerShots.Iterate(shot => {
+                if(){
+
+                }else{
+                    enemies.Iterate(enemy =>{
+
+                    });
+                }
+            });
+        }*/
 
 
         public void Run() {
