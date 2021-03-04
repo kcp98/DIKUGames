@@ -7,10 +7,10 @@ namespace Galaga {
         private Entity entity;
         private DynamicShape shape;
 
-        private float moveLeft = 0.0f;
-        private float moveRight = 0.0f;
+        private bool moveLeft = false;
+        private bool moveRight = false;
         const float MOVEMENT_SPEED = 0.01f;
-        
+
         public Player(DynamicShape shape, IBaseImage image) {
             entity = new Entity(shape, image);
             this.shape = shape;
@@ -21,25 +21,19 @@ namespace Galaga {
         }
 
         public void Move() {
+            if (moveLeft)  { this.shape.Position.X -= MOVEMENT_SPEED; }
+            if (moveRight) { this.shape.Position.X += MOVEMENT_SPEED; }
             if (this.shape.Position.X > 0.9f) { this.shape.Position.X = 0.9f; }
             if (this.shape.Position.X < 0.0f) { this.shape.Position.X = 0.0f; }
             this.shape.Move();
         }
 
         public void SetMoveLeft(bool val) {
-            if (val) { this.moveLeft -= MOVEMENT_SPEED; }
-            UpdateDirection();
+            moveLeft = val;
         }
 
         public void SetMoveRight(bool val) {
-            if (val) { this.moveRight += MOVEMENT_SPEED; }
-            UpdateDirection();
-        }
-        
-        private void UpdateDirection() {
-            this.shape.MoveX(moveRight + moveLeft);
-            this.moveLeft = 0.0f;
-            this.moveRight = 0.0f;
+            moveRight = val;
         }
         
         public Vec2F GetPosition() {
