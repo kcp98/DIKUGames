@@ -58,7 +58,6 @@ namespace Galaga {
         }
 
         public void KeyPress(string key) {
-            // TODO: switch on key string and set the player's move direction
             switch (key) {
                 case "KEY_LEFT":
                     player.SetMoveLeft(true);
@@ -70,9 +69,8 @@ namespace Galaga {
                     break;
             }
         }
+        
         public void KeyRelease(string key) {
-            // TODO: switch on key string and disable the player's move direction
-            // TODO: Close window if escape is pressed
             switch (key) {
                 case "KEY_LEFT":
                     player.SetMoveLeft(false);
@@ -84,13 +82,13 @@ namespace Galaga {
                     window.CloseWindow();
                     break;
                 case "KEY_SPACE":
-                    PlayerShot shot = new PlayerShot(player.GetPosition(), playerShotImage);
-                    playerShots.AddEntity(shot);
+                    playerShots.AddEntity(new PlayerShot(player.GetPosition(), playerShotImage));
                     break;
                 default:
                     break;
             }
         }
+
         public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
             switch (gameEvent.Parameter1) {
                 case "KEY_PRESS":
@@ -106,19 +104,17 @@ namespace Galaga {
 
         private void IterateShot(){
             playerShots.Iterate(shot => {
-                // TODO: move the shot's shape
                 shot.Move();
-                if ( shot.Shape.Position.Y >= 1f ) {
+                if (shot.Shape.Position.Y >= 1f) {
                     shot.DeleteEntity();
-                    // TODO: delete shot
-
-                }else{
-                    enemies.Iterate(enemy =>{
-                        // TODO: if collision btw shot and enemy -> delete both
-                        CollisionData col = CollisionDetection.Aabb(shot.Shape.AsDynamicShape(), enemy.Shape);
-                        if (col.Collision) {
-                            shot.DeleteEntity();
+                } else {
+                    enemies.Iterate(enemy => {
+                        CollisionData data = CollisionDetection.Aabb(
+                            shot.Shape.AsDynamicShape(), enemy.Shape
+                        );
+                        if (data.Collision) {
                             AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
+                            shot.DeleteEntity();
                             enemy.DeleteEntity();
                         }
                     });
@@ -127,12 +123,11 @@ namespace Galaga {
         }
 
         public void AddExplosion(Vec2F position, Vec2F extent) {
-            //TODO: add explosion to the AnimationContainer
-            var iS = new ImageStride(EXPLOSION_LENGTH_MS/8, 
-                ImageStride.CreateStrides(8, Path.Combine("Assets", "Images", "Explosion.png")));
-
-            StationaryShape ss = new StationaryShape(position, extent);
-            enemyExplosions.AddAnimation(ss, EXPLOSION_LENGTH_MS, iS);
+            ImageStride explosion = new ImageStride(EXPLOSION_LENGTH_MS / 8,
+                ImageStride.CreateStrides(8, Path.Combine("Assets", "Images", "Explosion.png"))
+            );
+            StationaryShape explosionPosition = new StationaryShape(position, extent);
+            enemyExplosions.AddAnimation(explosionPosition, EXPLOSION_LENGTH_MS, explosion);
         }
 
 
@@ -142,24 +137,17 @@ namespace Galaga {
                 
                 while (gameTimer.ShouldUpdate()) {
                     window.PollEvents();
-
-                    // update game logic here...
                     eventBus.ProcessEvents();
                     player.Move();
                     IterateShot();
-                
                 }
             
                 if (gameTimer.ShouldRender()) {
                     window.Clear();
-
-                    // render game entities here...
-                    this.player.Render();
-
+                    player.Render();
                     enemies.RenderEntities();
                     playerShots.RenderEntities();
                     enemyExplosions.RenderAnimations();
-
                     window.SwapBuffers();
                 }
                 
@@ -169,6 +157,5 @@ namespace Galaga {
                 }
             }
         }
-
     }
 }
