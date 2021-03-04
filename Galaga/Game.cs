@@ -25,6 +25,9 @@ namespace Galaga {
         private List<Image> explosionStrides;
         private const int EXPLOSION_LENGTH_MS = 500;
 
+        private Text pointsDisplay;
+        private int pointsCounter = 0;
+
         public Game() {
             window = new Window("Galaga", 500, 500);
             gameTimer = new GameTimer(30, 30);
@@ -54,7 +57,10 @@ namespace Galaga {
             //Explosions
             enemyExplosions = new AnimationContainer(numEnemies);
             explosionStrides = ImageStride.CreateStrides(8,Path.Combine("Assets", "Images", "Explosion.png"));
-        
+
+            // Points display
+            pointsDisplay = new Text("0 Points!", new Vec2F(0f, 0f), new Vec2F(0.2f, 0.2f));
+            pointsDisplay.SetColor(new Vec3I(255, 255, 255));
         }
 
         public void KeyPress(string key) {
@@ -116,6 +122,7 @@ namespace Galaga {
                             AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
                             shot.DeleteEntity();
                             enemy.DeleteEntity();
+                            pointsDisplay.SetText(string.Format("{0} Points!", ++pointsCounter));
                         }
                     });
                 }
@@ -148,6 +155,7 @@ namespace Galaga {
                     enemies.RenderEntities();
                     playerShots.RenderEntities();
                     enemyExplosions.RenderAnimations();
+                    pointsDisplay.RenderText();
                     window.SwapBuffers();
                 }
                 
