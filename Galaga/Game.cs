@@ -71,6 +71,12 @@ namespace Galaga {
                 case "KEY_RIGHT":
                     player.SetMoveRight(true);
                     break;
+                case "KEY_UP":
+                    player.SetMoveUp(true);
+                    break;
+                case "KEY_DOWN":
+                    player.SetMoveDown(true);
+                    break;
                 default:
                     break;
             }
@@ -84,11 +90,20 @@ namespace Galaga {
                 case "KEY_RIGHT":
                     player.SetMoveRight(false);
                     break;
+                case "KEY_UP":
+                    player.SetMoveUp(false);
+                    break;
+                case "KEY_DOWN":
+                    player.SetMoveDown(false);
+                    break;
                 case "KEY_ESCAPE":
                     window.CloseWindow();
                     break;
                 case "KEY_SPACE":
-                    playerShots.AddEntity(new PlayerShot(player.GetPosition(), playerShotImage));
+                    var leftPosition = player.GetPosition();
+                    var correcter = new Vec2F(0.05f, 0.0f);
+                    var shotCenterPosition = leftPosition + correcter;
+                    playerShots.AddEntity(new PlayerShot(shotCenterPosition, playerShotImage));
                     break;
                 default:
                     break;
