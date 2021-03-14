@@ -16,8 +16,10 @@ namespace Galaga {
         /// <summary>
         /// Reduces hitpoints and returns a bool indicating whether or not enemy has died.
         /// </summary>
-        public bool Hit() {
-            if (--hitpoints <= 2) { this.Image = enragedImage; }
+        public bool Hit(bool damage) {
+            if (damage && --hitpoints <= 2) {
+                this.Image = enragedImage;
+            }
             return hitpoints <= 0;
         }
         

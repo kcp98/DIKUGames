@@ -7,6 +7,7 @@ using DIKUArcade.Math;
 using System.Collections.Generic;
 using DIKUArcade.EventBus;
 using DIKUArcade.Physics;
+using Galaga.Squadron;
 
 namespace Galaga {
     // NOTE: We implement the IGameEventProcessor interface!
@@ -16,13 +17,14 @@ namespace Galaga {
         private Player player;
         private GameEventBus<object> eventBus;
 
-        private EntityContainer<Enemy> enemies;
+        private List<ISquadron> squadrons = new List<ISquadron>(3);
+        private int level = 0;
 
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
 
         private AnimationContainer enemyExplosions;
-        private List<Image> explosionStrides;
+        //private List<Image> explosionStrides;
         private const int EXPLOSION_LENGTH_MS = 500;
 
         private Text pointsDisplay;
@@ -41,18 +43,14 @@ namespace Galaga {
             window.RegisterEventBus(eventBus);
             eventBus.Subscribe(GameEventType.InputEvent, this);
 
-            //Enemies
+            // Squadrons of enemies
             var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
             var enemyStridesRed = ImageStride.CreateStrides(2, Path.Combine("Assets", "Images", "RedMonster.png"));
-            const int numEnemies = 8;
-            enemies = new EntityContainer<Enemy>(numEnemies);
-            for (int i = 0; i < numEnemies; i++) {
-                enemies.AddEntity(new Enemy(
-                    new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, images),
-                    new ImageStride(160, enemyStridesRed)
-                
-                ));
+            squadrons.Add(new BaseMonsters());
+            squadrons.Add(new MobMonsters());
+            squadrons.Add(new BossMonsters());
+            foreach (var squadron in squadrons) {
+                squadron.CreateEnemies(images, enemyStridesRed);
             }
 
             //PlayerShot
@@ -60,8 +58,8 @@ namespace Galaga {
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
         
             //Explosions
-            enemyExplosions = new AnimationContainer(numEnemies);
-            explosionStrides = ImageStride.CreateStrides(8,Path.Combine("Assets", "Images", "Explosion.png"));
+            enemyExplosions = new AnimationContainer(8);
+            //explosionStrides = ImageStride.CreateStrides(8,Path.Combine("Assets", "Images", "Explosion.png"));
 
             // Points display
             pointsDisplay = new Text("0 Points!", new Vec2F(0f, 0f), new Vec2F(0.2f, 0.2f));
@@ -134,15 +132,18 @@ namespace Galaga {
                 if (shot.Shape.Position.Y >= 1f) {
                     shot.DeleteEntity();
                 } else {
-                    enemies.Iterate(enemy => {
+                    squadrons[level].Enemies.Iterate(enemy => {
                         CollisionData data = CollisionDetection.Aabb(
                             shot.Shape.AsDynamicShape(), enemy.Shape
                         );
-                        if (data.Collision && enemy.Hit()) {
+                        if (data.Collision && enemy.Hit(true)) {
                             AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
                             shot.DeleteEntity();
                             enemy.DeleteEntity();
                             pointsDisplay.SetText(string.Format("{0} Points!", ++pointsCounter));
+                            if (squadrons[level].Enemies.CountEntities() <= 1 && level < 2) {
+                                level++;
+                            }
                         }
                     });
                 }
@@ -172,7 +173,7 @@ namespace Galaga {
                 if (gameTimer.ShouldRender()) {
                     window.Clear();
                     player.Render();
-                    enemies.RenderEntities();
+                    squadrons[level].Enemies.RenderEntities();
                     playerShots.RenderEntities();
                     enemyExplosions.RenderAnimations();
                     pointsDisplay.RenderText();
