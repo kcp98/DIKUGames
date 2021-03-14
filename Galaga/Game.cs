@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using DIKUArcade.EventBus;
 using DIKUArcade.Physics;
 using Galaga.Squadron;
+using System;
 
 namespace Galaga {
     // NOTE: We implement the IGameEventProcessor interface!
@@ -17,8 +18,7 @@ namespace Galaga {
         private Player player;
         private GameEventBus<object> eventBus;
 
-        private List<ISquadron> squadrons = new List<ISquadron>(3);
-        private int level = 0;
+        private ISquadron squadron;
 
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
@@ -29,6 +29,8 @@ namespace Galaga {
 
         private Text pointsDisplay;
         private int pointsCounter = 0;
+
+        private Random rand;
 
         public Game() {
             window = new Window("Galaga", 500, 500);
@@ -44,14 +46,8 @@ namespace Galaga {
             eventBus.Subscribe(GameEventType.InputEvent, this);
 
             // Squadrons of enemies
-            var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
-            var enemyStridesRed = ImageStride.CreateStrides(2, Path.Combine("Assets", "Images", "RedMonster.png"));
-            squadrons.Add(new BaseMonsters());
-            squadrons.Add(new MobMonsters());
-            squadrons.Add(new BossMonsters());
-            foreach (var squadron in squadrons) {
-                squadron.CreateEnemies(images, enemyStridesRed);
-            }
+            rand = new Random();
+            RefreshSquadron();
 
             //PlayerShot
             playerShots = new EntityContainer<PlayerShot>();
@@ -64,6 +60,20 @@ namespace Galaga {
             // Points display
             pointsDisplay = new Text("0 Points!", new Vec2F(0f, 0f), new Vec2F(0.2f, 0.2f));
             pointsDisplay.SetColor(new Vec3I(255, 255, 255));
+        }
+
+        private void RefreshSquadron() {
+            var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
+            var enemyStridesRed = ImageStride.CreateStrides(2, Path.Combine("Assets", "Images", "RedMonster.png"));
+            switch (rand.Next(3)) {
+                case 0:
+                    squadron = new FirstMonsters(); break;
+                case 1:
+                    squadron = new SecondMonsters(); break;
+                case 2:
+                    squadron = new ThirdMonsters(); break;
+            }
+            squadron.CreateEnemies(images, enemyStridesRed);
         }
 
         public void KeyPress(string key) {
@@ -132,7 +142,7 @@ namespace Galaga {
                 if (shot.Shape.Position.Y >= 1f) {
                     shot.DeleteEntity();
                 } else {
-                    squadrons[level].Enemies.Iterate(enemy => {
+                    squadron.Enemies.Iterate(enemy => {
                         CollisionData data = CollisionDetection.Aabb(
                             shot.Shape.AsDynamicShape(), enemy.Shape
                         );
@@ -141,8 +151,8 @@ namespace Galaga {
                             shot.DeleteEntity();
                             enemy.DeleteEntity();
                             pointsDisplay.SetText(string.Format("{0} Points!", ++pointsCounter));
-                            if (squadrons[level].Enemies.CountEntities() <= 1 && level < 2) {
-                                level++;
+                            if (squadron.Enemies.CountEntities() <= 1) {
+                                RefreshSquadron();
                             }
                         }
                     });
@@ -173,7 +183,7 @@ namespace Galaga {
                 if (gameTimer.ShouldRender()) {
                     window.Clear();
                     player.Render();
-                    squadrons[level].Enemies.RenderEntities();
+                    squadron.Enemies.RenderEntities();
                     playerShots.RenderEntities();
                     enemyExplosions.RenderAnimations();
                     pointsDisplay.RenderText();
