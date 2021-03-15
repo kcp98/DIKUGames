@@ -19,18 +19,15 @@ namespace Galaga {
         private GameEventBus<object> eventBus;
 
         private ISquadron squadron;
+        private Random rand;
 
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
 
         private AnimationContainer enemyExplosions;
-        //private List<Image> explosionStrides;
         private const int EXPLOSION_LENGTH_MS = 500;
 
-        private Text pointsDisplay;
-        private int pointsCounter = 0;
-
-        private Random rand;
+        private Score score;
 
         public Game() {
             window = new Window("Galaga", 500, 500);
@@ -55,11 +52,9 @@ namespace Galaga {
         
             //Explosions
             enemyExplosions = new AnimationContainer(8);
-            //explosionStrides = ImageStride.CreateStrides(8,Path.Combine("Assets", "Images", "Explosion.png"));
 
-            // Points display
-            pointsDisplay = new Text("0 Points!", new Vec2F(0f, 0f), new Vec2F(0.2f, 0.2f));
-            pointsDisplay.SetColor(new Vec3I(255, 255, 255));
+            // Score
+            score = new Score(new Vec2F(0.1f, 0.1f), new Vec2F(0.4f, 0.4f));
         }
 
         private void RefreshSquadron() {
@@ -146,13 +141,15 @@ namespace Galaga {
                         CollisionData data = CollisionDetection.Aabb(
                             shot.Shape.AsDynamicShape(), enemy.Shape
                         );
-                        if (data.Collision && enemy.Hit(true)) {
-                            AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
+                        if (data.Collision) {
                             shot.DeleteEntity();
-                            enemy.DeleteEntity();
-                            pointsDisplay.SetText(string.Format("{0} Points!", ++pointsCounter));
-                            if (squadron.Enemies.CountEntities() <= 1) {
-                                RefreshSquadron();
+                            if (enemy.Hit(true)) {
+                                AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
+                                enemy.DeleteEntity();
+                                score.AddPoint();
+                                if (squadron.Enemies.CountEntities() <= 1) {
+                                    RefreshSquadron();
+                                }
                             }
                         }
                     });
@@ -186,7 +183,7 @@ namespace Galaga {
                     squadron.Enemies.RenderEntities();
                     playerShots.RenderEntities();
                     enemyExplosions.RenderAnimations();
-                    pointsDisplay.RenderText();
+                    score.RenderScore();
                     window.SwapBuffers();
                 }
                 
