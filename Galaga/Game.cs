@@ -37,10 +37,11 @@ namespace Galaga {
                 new Image(Path.Combine("Assets", "Images", "Player.png"))
             );
             eventBus = new GameEventBus<object>();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent, GameEventType.PlayerEvent});
+            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent});
 
             window.RegisterEventBus(eventBus);
             eventBus.Subscribe(GameEventType.InputEvent, this);
+            eventBus.Subscribe(GameEventType.InputEvent, player);
 
             // Squadrons of enemies
             rand = new Random();
@@ -73,65 +74,19 @@ namespace Galaga {
             squadron.CreateEnemies(images, enemyStridesRed);
         }
 
-        public void KeyPress(string key) {
-            switch (key) {
-                case "KEY_LEFT":
-                    player.SetMoveLeft(true);
-                    break;
-                case "KEY_RIGHT":
-                    player.SetMoveRight(true);
-                    break;
-                case "KEY_UP":
-                    player.SetMoveUp(true);
-                    break;
-                case "KEY_DOWN":
-                    player.SetMoveDown(true);
-                    break;
-                default:
-                    break;
-            }
-        }
-        
-        public void KeyRelease(string key) {
-            switch (key) {
-                case "KEY_LEFT":
-                    player.SetMoveLeft(false);
-                    break;
-                case "KEY_RIGHT":
-                    player.SetMoveRight(false);
-                    break;
-                case "KEY_UP":
-                    player.SetMoveUp(false);
-                    break;
-                case "KEY_DOWN":
-                    player.SetMoveDown(false);
-                    break;
-                case "KEY_ESCAPE":
-                    window.CloseWindow();
-                    break;
-                case "KEY_SPACE":
-                    var leftPosition = player.GetPosition();
-                    var correcter = new Vec2F(0.05f, 0.0f);
-                    var shotCenterPosition = leftPosition + correcter;
-                    playerShots.AddEntity(new PlayerShot(shotCenterPosition, playerShotImage));
-                    break;
-                default:
-                    break;
-            }
-        }
-
         public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
-            switch (gameEvent.Parameter1) {
-                case "KEY_PRESS":
-                    KeyPress(gameEvent.Message);
-                    break;
-                case "KEY_RELEASE":
-                    KeyRelease(gameEvent.Message);
-                    break;
-                default:
-                    break;
-            }
-        } 
+                switch (gameEvent.Message) {
+                    case "KEY_SPACE":
+                        var leftPosition = player.GetPosition();
+                        var correcter = new Vec2F(0.05f, 0.0f);
+                        var shotCenterPosition = leftPosition + correcter;
+                        playerShots.AddEntity(new PlayerShot(shotCenterPosition, playerShotImage));
+                        break; 
+                    case "KEY_ESCAPE":
+                        window.CloseWindow();
+                        break;
+                }
+        }
 
         private void IterateShot(){
             playerShots.Iterate(shot => {

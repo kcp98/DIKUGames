@@ -1,9 +1,10 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
+using DIKUArcade.EventBus;
 
 namespace Galaga {
-    public class Player {
+    public class Player : IGameEventProcessor<object> {
         private Entity entity;
         private DynamicShape shape;
 
@@ -53,6 +54,54 @@ namespace Galaga {
 
         public Vec2F GetPosition() {
             return this.shape.Position;
+        }
+                        public void KeyPress(string key) {
+            switch (key) {
+                case "KEY_LEFT":
+                    this.SetMoveLeft(true);
+                    break;
+                case "KEY_RIGHT":
+                    this.SetMoveRight(true);
+                    break;
+                case "KEY_UP":
+                    this.SetMoveUp(true);
+                    break;
+                case "KEY_DOWN":
+                    this.SetMoveDown(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+        public void KeyRelease(string key) {
+            switch (key) {
+                case "KEY_LEFT":
+                    this.SetMoveLeft(false);
+                    break;
+                case "KEY_RIGHT":
+                    this.SetMoveRight(false);
+                    break;
+                case "KEY_UP":
+                    this.SetMoveUp(false);
+                    break;
+                case "KEY_DOWN":
+                    this.SetMoveDown(false);
+                    break;
+                default:
+                    break;
+            }
+        }
+        public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
+            switch (gameEvent.Parameter1) {
+                case "KEY_PRESS":
+                    KeyPress(gameEvent.Message);
+                    break;
+                case "KEY_RELEASE":
+                    KeyRelease(gameEvent.Message);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
