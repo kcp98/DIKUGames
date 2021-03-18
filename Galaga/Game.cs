@@ -150,6 +150,7 @@ namespace Galaga {
                                 enemy.DeleteEntity();
                                 score.AddPoint();
                                 if (squadron.Enemies.CountEntities() <= 1) {
+                                    down.IncreaseSpeed();
                                     RefreshSquadron();
                                 }
                             }
