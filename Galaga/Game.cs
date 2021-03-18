@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using DIKUArcade.EventBus;
 using DIKUArcade.Physics;
 using Galaga.Squadron;
+using Galaga.MovementStrategy;
 using System;
 
 namespace Galaga {
@@ -19,6 +20,7 @@ namespace Galaga {
         private GameEventBus<object> eventBus;
 
         private ISquadron squadron;
+        private IMovementStrategy movement;
         private Random rand;
 
         private EntityContainer<PlayerShot> playerShots;
@@ -29,6 +31,8 @@ namespace Galaga {
 
         private Score score;
 
+        private Entity background;
+
         public Game() {
             window = new Window("Galaga", 500, 500);
             gameTimer = new GameTimer(30, 30);
@@ -37,11 +41,11 @@ namespace Galaga {
                 new Image(Path.Combine("Assets", "Images", "Player.png"))
             );
             eventBus = new GameEventBus<object>();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent});
+            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent, GameEventType.PlayerEvent});
 
             window.RegisterEventBus(eventBus);
             eventBus.Subscribe(GameEventType.InputEvent, this);
-            eventBus.Subscribe(GameEventType.InputEvent, player);
+            eventBus.Subscribe(GameEventType.PlayerEvent, player);
 
             // Squadrons of enemies
             rand = new Random();
@@ -57,6 +61,10 @@ namespace Galaga {
             // Score
             score = new Score(new Vec2F(0.1f, 0.1f), new Vec2F(0.4f, 0.4f));
 
+            // Background
+            StationaryShape bgShape = new StationaryShape(new Vec2F(0f, 0f), new Vec2F(1f, 1f));
+            IBaseImage bgImage = new Image(Path.Combine("Assets", "Images", "SpaceBackground.png"));
+            background = new Entity(bgShape, bgImage);
             
         }
 
@@ -71,22 +79,50 @@ namespace Galaga {
                 case 2:
                     squadron = new ThirdMonsters(); break;
             }
+            switch (rand.Next(3)) {
+                case 0:
+                    movement = new NoMove(); break;
+                case 1:
+                    movement = new Down(); break;
+                case 2:
+                    movement = new ZigZagDown(); break;
+            }
             squadron.CreateEnemies(images, enemyStridesRed);
         }
 
+        public void KeyRelease(string key) {
+             switch (key) {
+                 case "KEY_ESCAPE":
+                    window.CloseWindow();
+                    break;
+                 case "KEY_SPACE":
+                    var leftPosition = player.GetPosition();
+                    var correcter = new Vec2F(0.05f, 0.0f);
+                    var shotCenterPosition = leftPosition + correcter;
+                    playerShots.AddEntity(new PlayerShot(shotCenterPosition, playerShotImage));
+                    break;
+                 default:
+                    eventBus.RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                        GameEventType.PlayerEvent, this, key, "KEY_RELEASE", ""));
+                    break;
+             }
+         }
+
         public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
-                switch (gameEvent.Message) {
-                    case "KEY_SPACE":
-                        var leftPosition = player.GetPosition();
-                        var correcter = new Vec2F(0.05f, 0.0f);
-                        var shotCenterPosition = leftPosition + correcter;
-                        playerShots.AddEntity(new PlayerShot(shotCenterPosition, playerShotImage));
-                        break; 
-                    case "KEY_ESCAPE":
-                        window.CloseWindow();
-                        break;
-                }
-        }
+            switch (gameEvent.Parameter1) {
+                case "KEY_PRESS":
+                    eventBus.RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                        GameEventType.PlayerEvent, this, gameEvent.Message, "KEY_PRESS", ""));
+                    break;
+                case "KEY_RELEASE":
+                    KeyRelease(gameEvent.Message);
+                    break;
+                default:
+                    break;
+            }
+        } 
 
         private void IterateShot(){
             playerShots.Iterate(shot => {
@@ -105,7 +141,7 @@ namespace Galaga {
                                 enemy.DeleteEntity();
                                 score.AddPoint();
                                 if (squadron.Enemies.CountEntities() <= 1) {
-                                    down.IncreaseSpeed();
+                                    // movement.IncreaseSpeed();
                                     RefreshSquadron();
                                 }
                             }
@@ -123,9 +159,6 @@ namespace Galaga {
             enemyExplosions.AddAnimation(explosionPosition, EXPLOSION_LENGTH_MS, explosion);
         }
 
-
-        // Instance of down to move enmies
-        MovementStrategy.Down down = new MovementStrategy.Down();
         public void Run() {
             while(window.IsRunning()) {
                 gameTimer.MeasureTime();
@@ -139,9 +172,10 @@ namespace Galaga {
             
                 if (gameTimer.ShouldRender()) {
                     window.Clear();
+                    background.RenderEntity();
                     player.Render();
                     squadron.Enemies.RenderEntities();
-                    down.MoveEnemies(squadron.Enemies);
+                    movement.MoveEnemies(squadron.Enemies);
                     playerShots.RenderEntities();
                     enemyExplosions.RenderAnimations();
                     score.RenderScore();

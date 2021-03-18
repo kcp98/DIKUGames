@@ -36,26 +36,27 @@ namespace Galaga {
             this.shape.Move();
         }
 
-        public void SetMoveLeft(bool val) {
+        private void SetMoveLeft(bool val) {
             moveLeft = val;
         }
 
-        public void SetMoveRight(bool val) {
+        private void SetMoveRight(bool val) {
             moveRight = val;
         }
 
-        public void SetMoveUp(bool val){
+        private void SetMoveUp(bool val){
             moveUp = val;
         }
         
-        public void SetMoveDown(bool val){
+        private void SetMoveDown(bool val){
             moveDown = val;
         }
 
         public Vec2F GetPosition() {
             return this.shape.Position;
         }
-                        public void KeyPress(string key) {
+
+        public void KeyPress(string key) {
             switch (key) {
                 case "KEY_LEFT":
                     this.SetMoveLeft(true);
