@@ -55,6 +55,8 @@ namespace Galaga {
 
             // Score
             score = new Score(new Vec2F(0.1f, 0.1f), new Vec2F(0.4f, 0.4f));
+
+            
         }
 
         private void RefreshSquadron() {
@@ -166,6 +168,8 @@ namespace Galaga {
         }
 
 
+        // Instance of down to move enmies
+        MovementStrategy.Down down = new MovementStrategy.Down();
         public void Run() {
             while(window.IsRunning()) {
                 gameTimer.MeasureTime();
@@ -181,6 +185,7 @@ namespace Galaga {
                     window.Clear();
                     player.Render();
                     squadron.Enemies.RenderEntities();
+                    down.MoveEnemies(squadron.Enemies);
                     playerShots.RenderEntities();
                     enemyExplosions.RenderAnimations();
                     score.RenderScore();
