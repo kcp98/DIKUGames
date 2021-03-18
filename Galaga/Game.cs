@@ -32,6 +32,7 @@ namespace Galaga {
         private Score score;
 
         private Entity background;
+        private bool GameOver = false;
 
         public Game() {
             window = new Window("Galaga", 500, 500);
@@ -124,6 +125,7 @@ namespace Galaga {
             }
         } 
 
+
         private void IterateShot(){
             playerShots.Iterate(shot => {
                 shot.Move();
@@ -159,6 +161,16 @@ namespace Galaga {
             enemyExplosions.AddAnimation(explosionPosition, EXPLOSION_LENGTH_MS, explosion);
         }
 
+        public void CheckGameEnded(){
+            squadron.Enemies.Iterate(enemy => {
+                if(enemy.Shape.Position.Y <= 0.0f){
+                    GameOver = true;
+                    eventBus.Unsubscribe(GameEventType.PlayerEvent, player);
+                    player.DeletePlayer();
+                    }
+            });
+        }
+
         public void Run() {
             while(window.IsRunning()) {
                 gameTimer.MeasureTime();
@@ -166,29 +178,28 @@ namespace Galaga {
                 while (gameTimer.ShouldUpdate()) {
                     window.PollEvents();
                     eventBus.ProcessEvents();
+
+                    
                     player.Move();
                     IterateShot();
+                
                 }
             
                 if (gameTimer.ShouldRender()) {
                     window.Clear();
-                    background.RenderEntity();
-                    player.Render();
-                    squadron.Enemies.RenderEntities();
-                    movement.MoveEnemies(squadron.Enemies);
-                    playerShots.RenderEntities();
-                    enemyExplosions.RenderAnimations();
-                    score.RenderScore();
-                    window.SwapBuffers();
+                    background.RenderEntity();   
+                    if(!GameOver){
+                        player.Render();
+                        squadron.Enemies.RenderEntities();
+                        movement.MoveEnemies(squadron.Enemies);
+                        playerShots.RenderEntities();
+                        enemyExplosions.RenderAnimations();
+                    }
 
-                    squadron.Enemies.Iterate(enemy => {
-                        if(enemy.Shape.Position.Y <= 0){
-                            squadron.Enemies.Iterate(enemy => {
-                                enemy.DeleteEntity();
-                            });
-                            player.DeletePlayer();
-                        }
-                    });
+                    CheckGameEnded();
+                    
+                    score.RenderScore(GameOver);
+                    window.SwapBuffers();
                 }
                 
                 if (gameTimer.ShouldReset()) {

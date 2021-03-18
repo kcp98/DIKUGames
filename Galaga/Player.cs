@@ -55,10 +55,6 @@ namespace Galaga {
         public Vec2F GetPosition() {
             return this.shape.Position;
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> refs/remotes/origin/master
         public void KeyPress(string key) {
             switch (key) {
                 case "KEY_LEFT":

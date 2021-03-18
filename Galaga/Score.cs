@@ -18,7 +18,11 @@ namespace Galaga {
         public void AddPoint() {
             display.SetText(string.Format("{0}", ++score));
         }
-        public void RenderScore() {
+        public void RenderScore(bool GameOver) {
+            if(GameOver){
+                display.SetFontSize(70);
+                display.SetText(string.Format("GAME OVER \n{0}", score));
+            }
             display.RenderText();
         }
     }
