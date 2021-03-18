@@ -146,6 +146,15 @@ namespace Galaga {
                     enemyExplosions.RenderAnimations();
                     score.RenderScore();
                     window.SwapBuffers();
+
+                    squadron.Enemies.Iterate(enemy => {
+                        if(enemy.Shape.Position.Y <= 0){
+                            squadron.Enemies.Iterate(enemy => {
+                                enemy.DeleteEntity();
+                            });
+                            player.DeletePlayer();
+                        }
+                    });
                 }
                 
                 if (gameTimer.ShouldReset()) {

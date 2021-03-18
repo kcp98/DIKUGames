@@ -55,7 +55,7 @@ namespace Galaga {
         public Vec2F GetPosition() {
             return this.shape.Position;
         }
-                        public void KeyPress(string key) {
+        public void KeyPress(string key) {
             switch (key) {
                 case "KEY_LEFT":
                     this.SetMoveLeft(true);
@@ -102,6 +102,10 @@ namespace Galaga {
                 default:
                     break;
             }
+        }
+
+        public void DeletePlayer(){
+            this.entity.DeleteEntity();
         }
     }
 }
