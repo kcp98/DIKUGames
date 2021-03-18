@@ -7,10 +7,18 @@ namespace Galaga.MovementStrategy {
         const float amplitude = 0.05f;
         const float period = 0.045f;
         const float MOVEMENT_SPEED = 0.0003f;
+
+        private static int squadronRefreshes = 1;
+        private static float increaseSpeed = 0.0005f;
         public void MoveEnemy(Enemy enemy) {
                 float x_0 = enemy.startPos.Position.X;
                 float y_0 = enemy.startPos.Position.Y;
-                float y_i = enemy.Shape.Position.Y - MOVEMENT_SPEED;
+                float y_i;
+                if(enemy.EnemyEnraged){
+                    y_i = enemy.Shape.Position.Y - ((MOVEMENT_SPEED * 3) + increaseSpeed);
+                }else{
+                    y_i = enemy.Shape.Position.Y - (MOVEMENT_SPEED + increaseSpeed);
+                } 
                 float x_i = x_0 + amplitude * MathF.Sin((2*MathF.PI*(y_0-y_i)/period));
                 enemy.Shape.SetPosition(new Vec2F(x_i,y_i));
         }
@@ -18,6 +26,11 @@ namespace Galaga.MovementStrategy {
             foreach (Enemy enemy in enemies) {
                 MoveEnemy(enemy);
             }
+        }
+
+        public void IncreaseSpeed(){
+            squadronRefreshes++;
+            increaseSpeed = increaseSpeed * squadronRefreshes;
         }
     }
 }

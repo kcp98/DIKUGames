@@ -7,7 +7,7 @@ namespace Galaga {
         private int hitpoints = 4;
         public StationaryShape startPos { get; }
         private IBaseImage enragedImage;
-
+        public bool EnemyEnraged { get; private set; } = false ;
         public Enemy(DynamicShape shape, IBaseImage image, IBaseImage enraged)
             : base(shape, image) {
                 enragedImage = enraged;
@@ -20,11 +20,14 @@ namespace Galaga {
         public bool Hit(bool damage) {
             if (damage && --hitpoints <= 2) {
                 this.Image = enragedImage;
+                EnragedEnemy();
             }
             return hitpoints <= 0;
         }
         
-        
+        public void EnragedEnemy(){
+            EnemyEnraged = true;
+        }
     }
     
 }
