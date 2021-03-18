@@ -32,7 +32,7 @@ namespace Galaga {
         private Score score;
 
         private Entity background;
-        private bool GameOver = false;
+        private bool gameOver = false;
 
         public Game() {
             window = new Window("Galaga", 500, 500);
@@ -66,7 +66,6 @@ namespace Galaga {
             StationaryShape bgShape = new StationaryShape(new Vec2F(0f, 0f), new Vec2F(1f, 1f));
             IBaseImage bgImage = new Image(Path.Combine("Assets", "Images", "SpaceBackground.png"));
             background = new Entity(bgShape, bgImage);
-            
         }
 
         private void RefreshSquadron() {
@@ -74,19 +73,25 @@ namespace Galaga {
             var enemyStridesRed = ImageStride.CreateStrides(2, Path.Combine("Assets", "Images", "RedMonster.png"));
             switch (rand.Next(3)) {
                 case 0:
-                    squadron = new FirstMonsters(); break;
+                    squadron = new FirstMonsters();
+                    break;
                 case 1:
-                    squadron = new SecondMonsters(); break;
+                    squadron = new SecondMonsters();
+                    break;
                 case 2:
-                    squadron = new ThirdMonsters(); break;
+                    squadron = new ThirdMonsters();
+                    break;
             }
             switch (rand.Next(3)) {
                 case 0:
-                    movement = new NoMove(); break;
+                    movement = new NoMove();
+                    break;
                 case 1:
-                    movement = new Down(); break;
+                    movement = new Down();
+                    break;
                 case 2:
-                    movement = new ZigZagDown(); break;
+                    movement = new ZigZagDown();
+                    break;
             }
             squadron.CreateEnemies(images, enemyStridesRed);
         }
@@ -97,10 +102,8 @@ namespace Galaga {
                     window.CloseWindow();
                     break;
                  case "KEY_SPACE":
-                    var leftPosition = player.GetPosition();
-                    var correcter = new Vec2F(0.05f, 0.0f);
-                    var shotCenterPosition = leftPosition + correcter;
-                    playerShots.AddEntity(new PlayerShot(shotCenterPosition, playerShotImage));
+                    var shotPosition = new Vec2F(0.05f, 0f) + player.GetPosition();                  
+                    playerShots.AddEntity(new PlayerShot(shotPosition, playerShotImage));
                     break;
                  default:
                     eventBus.RegisterEvent(
@@ -143,7 +146,8 @@ namespace Galaga {
                                 enemy.DeleteEntity();
                                 score.AddPoint();
                                 if (squadron.Enemies.CountEntities() <= 1) {
-                                    movement.IncreaseSpeed();
+                                    Down.IncreaseSpeed();
+                                    ZigZagDown.IncreaseSpeed();
                                     RefreshSquadron();
                                 }
                             }
@@ -163,11 +167,9 @@ namespace Galaga {
 
         public void CheckGameEnded(){
             squadron.Enemies.Iterate(enemy => {
-                if(enemy.Shape.Position.Y <= 0.0f){
-                    GameOver = true;
-                    eventBus.Unsubscribe(GameEventType.PlayerEvent, player);
-                    player.DeletePlayer();
-                    }
+                if (enemy.Shape.Position.Y <= 0f) {
+                    gameOver = true;
+                }
             });
         }
 
@@ -178,27 +180,22 @@ namespace Galaga {
                 while (gameTimer.ShouldUpdate()) {
                     window.PollEvents();
                     eventBus.ProcessEvents();
-
-                    
                     player.Move();
                     IterateShot();
-                
                 }
             
                 if (gameTimer.ShouldRender()) {
                     window.Clear();
                     background.RenderEntity();   
-                    if(!GameOver){
+                    if (!gameOver) {
                         player.Render();
                         squadron.Enemies.RenderEntities();
                         movement.MoveEnemies(squadron.Enemies);
                         playerShots.RenderEntities();
                         enemyExplosions.RenderAnimations();
                     }
-
                     CheckGameEnded();
-                    
-                    score.RenderScore(GameOver);
+                    score.RenderScore(gameOver);
                     window.SwapBuffers();
                 }
                 

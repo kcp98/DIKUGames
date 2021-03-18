@@ -4,24 +4,23 @@ namespace Galaga.MovementStrategy {
     public class Down : IMovementStrategy {
         
         const float MOVEMENT_SPEED = 0.0015f;
-        private static int squadronRefreshes = 1;
-        private static float increaseSpeed = 0.0005f;
+        private static float extraSpeed = 0f;
+
         public void MoveEnemy(Enemy enemy) {
-            if(enemy.EnemyEnraged){
-                enemy.Shape.Position.Y -= ((MOVEMENT_SPEED * 3) + increaseSpeed);
-            }else{
-                enemy.Shape.Position.Y -= (MOVEMENT_SPEED + increaseSpeed);
-            }
+            var speed = MOVEMENT_SPEED + extraSpeed;
+            if (enemy.enraged) { speed *= 3; }
+
+            enemy.Shape.MoveY(-speed);
         }
+
         public void MoveEnemies(EntityContainer<Enemy> enemies) {
             foreach (Enemy enemy in enemies) {
                 MoveEnemy(enemy);
             }
         }
 
-        public void IncreaseSpeed(){
-            squadronRefreshes++;
-            increaseSpeed = increaseSpeed * squadronRefreshes;
+        public static void IncreaseSpeed(){
+            extraSpeed += 0.0005f;
         }
     }
 }

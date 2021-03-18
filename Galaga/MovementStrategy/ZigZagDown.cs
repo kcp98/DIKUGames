@@ -8,29 +8,29 @@ namespace Galaga.MovementStrategy {
         const float period = 0.045f;
         const float MOVEMENT_SPEED = 0.0003f;
 
-        private static int squadronRefreshes = 1;
-        private static float increaseSpeed = 0.0005f;
+        private static float extraSpeed = 0f;
+
         public void MoveEnemy(Enemy enemy) {
                 float x_0 = enemy.startPos.Position.X;
                 float y_0 = enemy.startPos.Position.Y;
-                float y_i;
-                if(enemy.EnemyEnraged){
-                    y_i = enemy.Shape.Position.Y - ((MOVEMENT_SPEED * 3) + increaseSpeed);
-                }else{
-                    y_i = enemy.Shape.Position.Y - (MOVEMENT_SPEED + increaseSpeed);
-                } 
-                float x_i = x_0 + amplitude * MathF.Sin((2*MathF.PI*(y_0-y_i)/period));
-                enemy.Shape.SetPosition(new Vec2F(x_i,y_i));
+               
+                var speed = MOVEMENT_SPEED + extraSpeed;
+                if (enemy.enraged) { speed *= 3; }
+
+                float y_i = enemy.Shape.Position.Y - speed;
+                float x_i = x_0 + amplitude * MathF.Sin(2 * MathF.PI * (y_0 - y_i) / period);
+
+                enemy.Shape.SetPosition(new Vec2F(x_i, y_i));
         }
+
         public void MoveEnemies(EntityContainer<Enemy> enemies) {
             foreach (Enemy enemy in enemies) {
                 MoveEnemy(enemy);
             }
         }
 
-        public void IncreaseSpeed(){
-            squadronRefreshes++;
-            increaseSpeed = increaseSpeed * squadronRefreshes;
+        public static void IncreaseSpeed(){
+            extraSpeed += 0.0005f;
         }
     }
 }

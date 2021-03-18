@@ -28,7 +28,7 @@ namespace Galaga {
             if (moveLeft)  { this.shape.Position.X -= MOVEMENT_SPEED; }
             if (moveRight) { this.shape.Position.X += MOVEMENT_SPEED; }
             if (moveDown)  { this.shape.Position.Y -= MOVEMENT_SPEED; }
-            if (moveUp) { this.shape.Position.Y += MOVEMENT_SPEED; }
+            if (moveUp)    { this.shape.Position.Y += MOVEMENT_SPEED; }
             if (this.shape.Position.X > 0.9f) { this.shape.Position.X = 0.9f; }
             if (this.shape.Position.X < 0.0f) { this.shape.Position.X = 0.0f; }
             if (this.shape.Position.Y > 0.9f) { this.shape.Position.Y = 0.9f; }
@@ -55,7 +55,8 @@ namespace Galaga {
         public Vec2F GetPosition() {
             return this.shape.Position;
         }
-        public void KeyPress(string key) {
+
+        private void KeyPress(string key) {
             switch (key) {
                 case "KEY_LEFT":
                     this.SetMoveLeft(true);
@@ -73,7 +74,8 @@ namespace Galaga {
                     break;
             }
         }
-        public void KeyRelease(string key) {
+        
+        private void KeyRelease(string key) {
             switch (key) {
                 case "KEY_LEFT":
                     this.SetMoveLeft(false);
@@ -104,7 +106,7 @@ namespace Galaga {
             }
         }
 
-        public void DeletePlayer(){
+        public void DeletePlayer() {
             this.entity.DeleteEntity();
         }
     }
