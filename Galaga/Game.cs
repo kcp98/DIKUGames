@@ -110,15 +110,23 @@ namespace Galaga {
                         GameEventFactory<object>.CreateGameEventForAllProcessors(
                         GameEventType.PlayerEvent, this, key, "KEY_RELEASE", ""));
                     break;
-             }
-         }
+            }
+        }
+
+        public void KeyPress(string key) {
+             switch (key) {
+                default:
+                    eventBus.RegisterEvent(
+                        GameEventFactory<object>.CreateGameEventForAllProcessors(
+                        GameEventType.PlayerEvent, this, key, "KEY_PRESS", ""));
+                    break;
+            }
+        }
 
         public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
             switch (gameEvent.Parameter1) {
                 case "KEY_PRESS":
-                    eventBus.RegisterEvent(
-                        GameEventFactory<object>.CreateGameEventForAllProcessors(
-                        GameEventType.PlayerEvent, this, gameEvent.Message, "KEY_PRESS", ""));
+                    KeyPress(gameEvent.Message);
                     break;
                 case "KEY_RELEASE":
                     KeyRelease(gameEvent.Message);
