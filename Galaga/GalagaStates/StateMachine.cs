@@ -13,16 +13,36 @@ namespace Galaga.GalagaStates {
         }
         private void SwitchState(GameStateType stateType) {
             switch (stateType) {
-                default:
+                case GameStateType.GameRunning:
+                    ActiveState = GameRunning.GetInstance();
+                    break;
+                case GameStateType.GamePaused:
+                    ActiveState = GamePaused.GetInstance();
+                    break;
+                case GameStateType.MainMenu:
+                    ActiveState = MainMenu.GetInstance();
+                    break;
+                default: new System.Exception("Invalid selection");
                     break;
             }
         }
 
         public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
-            switch (gameEvent.Parameter1) {
-                default:
-                    break;
+            if (type == GameEventType.InputEvent) {
+                switch (gameEvent.Parameter1) {
+                    case "KEY_PRESS":
+                    case "KEY_RELEASE":
+                        this.ActiveState.HandleKeyEvent(gameEvent.Message, gameEvent.Parameter1);
+                        break;
+                    default:
+                        break;
+                } 
             }
+
+            if (type == GameEventType.GameStateEvent) {
+                SwitchState(StateTransformer.TransformStringToState(gameEvent.Parameter1));
+            }
+
         }
     }
 }
