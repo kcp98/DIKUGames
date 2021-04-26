@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using Galaga;
 using DIKUArcade.Entities;
-using DIKUArcade.EventBus;
+using DIKUArcade.Events;
 using DIKUArcade.Math;
 using System.Collections.Generic;
 
@@ -12,9 +12,11 @@ namespace GalagaTests {
 
         [SetUp]
         public void InitiatePlayer() {
-            GalagaBus.GetBus().InitializeEventBus(new List<GameEventType> {
-                GameEventType.InputEvent, GameEventType.PlayerEvent
-            });
+            try {
+                GalagaBus.GetBus().InitializeEventBus(new List<GameEventType> {
+                    GameEventType.InputEvent, GameEventType.PlayerEvent, GameEventType.GameStateEvent
+                });
+            } catch {}
             player = new Player(
                 new DynamicShape(new Vec2F(0.5f, 0.5f), new Vec2F(0.1f, 0.1f)), null
             );
@@ -30,13 +32,12 @@ namespace GalagaTests {
             );
         }
 
-        private void RegisterMovement(string Message, string Parameter1) {
-            GalagaBus.GetBus().RegisterEvent(
-                GameEventFactory<object>.CreateGameEventForAllProcessors(
-                    GameEventType.PlayerEvent,
-                    this,
-                    Message,
-                    Parameter1, ""));
+        private void RegisterMovement(string msg, string arg) {
+            GalagaBus.GetBus().RegisterEvent(new GameEvent {
+                    EventType  = GameEventType.PlayerEvent,
+                    StringArg1 = arg,
+                    Message    = msg
+                });
             GalagaBus.GetBus().ProcessEventsSequentially();
         }
 

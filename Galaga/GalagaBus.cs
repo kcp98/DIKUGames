@@ -1,12 +1,12 @@
-using DIKUArcade.EventBus;
+using DIKUArcade.Events;
 
 namespace Galaga {
     public static class GalagaBus {
-        private static GameEventBus<object> eventBus;
+        private static GameEventBus eventBus;
 
-        public static GameEventBus<object> GetBus() {
+        public static GameEventBus GetBus() {
             return GalagaBus.eventBus ?? (GalagaBus.eventBus =
-                                    new GameEventBus<object>());
+                                        new GameEventBus());
         }
     }
 }

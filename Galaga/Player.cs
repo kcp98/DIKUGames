@@ -1,10 +1,11 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-using DIKUArcade.EventBus;
+using DIKUArcade.Events;
+using DIKUArcade.Input;
 
 namespace Galaga {
-    public class Player : IGameEventProcessor<object> {
+    public class Player : IGameEventProcessor {
         private Entity entity;
         private DynamicShape shape;
 
@@ -93,16 +94,18 @@ namespace Galaga {
                     break;
             }
         }
-        public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
-            switch (gameEvent.Parameter1) {
-                case "KEY_PRESS":
-                    KeyPress(gameEvent.Message);
-                    break;
-                case "KEY_RELEASE":
-                    KeyRelease(gameEvent.Message);
-                    break;
-                default:
-                    break;
+        public void ProcessEvent(GameEvent gameEvent) {
+            if (gameEvent.EventType == GameEventType.PlayerEvent) {
+                switch (gameEvent.StringArg1) {
+                    case "KEY_PRESS":
+                        KeyPress(gameEvent.Message);
+                        break;
+                    case "KEY_RELEASE":
+                        KeyRelease(gameEvent.Message);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 

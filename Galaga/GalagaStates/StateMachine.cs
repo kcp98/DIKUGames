@@ -1,8 +1,9 @@
-using DIKUArcade.EventBus;
+using DIKUArcade.Events;
 using DIKUArcade.State;
+using DIKUArcade.Input;
 
 namespace Galaga.GalagaStates {
-    public class StateMachine : IGameEventProcessor<object> {
+    public class StateMachine : IGameEventProcessor {
         public IGameState ActiveState { get; private set; }
         
         public StateMachine() {
@@ -27,22 +28,10 @@ namespace Galaga.GalagaStates {
             }
         }
 
-        public void ProcessEvent(GameEventType type, GameEvent<object> gameEvent) {
-            if (type == GameEventType.InputEvent) {
-                switch (gameEvent.Parameter1) {
-                    case "KEY_PRESS":
-                    case "KEY_RELEASE":
-                        this.ActiveState.HandleKeyEvent(gameEvent.Message, gameEvent.Parameter1);
-                        break;
-                    default:
-                        break;
-                } 
+        public void ProcessEvent(GameEvent gameEvent) {
+            if (gameEvent.EventType == GameEventType.GameStateEvent) {
+                SwitchState(StateTransformer.TransformStringToState(gameEvent.Message));
             }
-
-            if (type == GameEventType.GameStateEvent) {
-                SwitchState(StateTransformer.TransformStringToState(gameEvent.Parameter1));
-            }
-
         }
     }
 }

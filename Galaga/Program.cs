@@ -1,4 +1,5 @@
 ﻿using System;
+using DIKUArcade.GUI;
 
 namespace Galaga
 {
@@ -6,7 +7,8 @@ namespace Galaga
     {
         static void Main(string[] args)
         {
-            var game = new Game();
+            var winArgs = new WindowArgs();
+            var game    = new Game(winArgs);
             game.Run();
         }
     }

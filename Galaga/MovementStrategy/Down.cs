@@ -22,5 +22,9 @@ namespace Galaga.MovementStrategy {
         public static void IncreaseSpeed(){
             extraSpeed += 0.0005f;
         }
+
+        public static void ResetExtraSpeed(){
+            extraSpeed = 0f;
+        }
     }
 }

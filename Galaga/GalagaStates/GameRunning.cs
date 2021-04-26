@@ -7,7 +7,8 @@ using DIKUArcade.Physics;
 using Galaga.Squadron;
 using Galaga.MovementStrategy;
 using System;
-using DIKUArcade.EventBus;
+using DIKUArcade.Events;
+using DIKUArcade.Input;
 
 namespace Galaga.GalagaStates {
     public class GameRunning : IGameState {
@@ -33,8 +34,6 @@ namespace Galaga.GalagaStates {
         public void newGame() {
             GameRunning.instance = null;
         }
-        public void GameLoop() {}
-
 
         public void InitializeGameState() {
             //The player
@@ -47,6 +46,10 @@ namespace Galaga.GalagaStates {
             // Squadrons of enemies
             rand = new Random();
             RefreshSquadron();
+            
+            // Reset difficulty
+            Down.ResetExtraSpeed();
+            ZigZagDown.ResetExtraSpeed();
 
             //PlayerShot
             playerShots = new EntityContainer<PlayerShot>();
@@ -65,12 +68,12 @@ namespace Galaga.GalagaStates {
 
         }
 
-
-        public void UpdateGameLogic() {
+        public void UpdateState() {
             player.Move();
             IterateShot();
         }
 
+        public void ResetState() {}
 
         public void RenderState() {
             background.RenderEntity();   
@@ -84,21 +87,6 @@ namespace Galaga.GalagaStates {
             score.RenderScore(gameOver);
             movement.MoveEnemies(squadron.Enemies);
         }
-
-
-        public void HandleKeyEvent(string keyValue, string keyAction) {
-            switch (keyAction) {
-                case "KEY_PRESS":
-                    KeyPress(keyValue);
-                    break;
-                case "KEY_RELEASE":
-                    KeyRelease(keyValue);
-                    break;
-                default:
-                    break;
-            }
-        }
-
 
         private void RefreshSquadron() {
             var images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
@@ -169,38 +157,72 @@ namespace Galaga.GalagaStates {
                 }
             });
         }
-        public void KeyRelease(string key) {
-             switch (key) {
-                 case "KEY_ESCAPE":
-                     GalagaBus.GetBus().RegisterEvent(GameEventFactory<object>.CreateGameEventForAllProcessors( 
-                                GameEventType.GameStateEvent, this, "CHANGE_STATE", "GAME_PAUSED", ""));
+
+        public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {
+            switch (action) {
+                case KeyboardAction.KeyPress:
+                    KeyPress(key);
                     break;
-                 case "KEY_SPACE":
+                case KeyboardAction.KeyRelease:
+                    KeyRelease(key);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private string KeyStringTransformer(KeyboardKey key) {
+            switch (key) {
+                case KeyboardKey.Up:
+                    return "KEY_UP";
+                case KeyboardKey.Down:
+                    return "KEY_DOWN";
+                case KeyboardKey.Left:
+                    return "KEY_LEFT";
+                case KeyboardKey.Right:
+                    return "KEY_RIGHT";
+                default:
+                    return "UNKNOWN";
+            }
+        }
+
+        public void KeyRelease(KeyboardKey key) {
+            switch (key) {
+                case KeyboardKey.Escape:
+                    GalagaBus.GetBus().RegisterEvent(new GameEvent {
+                        EventType  = GameEventType.GameStateEvent,
+                        StringArg1 = "CHANGE_STATE",
+                        Message    = "GAME_PAUSED"
+                    });
+                    break;
+                case KeyboardKey.Space:
                     var shotPosition = new Vec2F(0.05f, 0f) + player.GetPosition();                  
                     playerShots.AddEntity(new PlayerShot(shotPosition, playerShotImage));
                     break;
-                 default:
-                    GalagaBus.GetBus().RegisterEvent(
-                        GameEventFactory<object>.CreateGameEventForAllProcessors(
-                        GameEventType.PlayerEvent, this, key, "KEY_RELEASE", ""));
-                    break;
-            }
-        }
-
-        public void KeyPress(string key) {
-             switch (key) {
                 default:
-                    // If the game is over any key pressed will transfer to main menu
-                    if (gameOver==true){ 
-                        GalagaBus.GetBus().RegisterEvent(GameEventFactory<object>.CreateGameEventForAllProcessors( 
-                                GameEventType.GameStateEvent, this, "CHANGE_STATE", "MAIN_MENU", ""));
-                    }
-                    GalagaBus.GetBus().RegisterEvent(
-                        GameEventFactory<object>.CreateGameEventForAllProcessors(
-                        GameEventType.PlayerEvent, this, key, "KEY_PRESS", ""));
+                    GalagaBus.GetBus().RegisterEvent(new GameEvent {
+                        EventType  = GameEventType.PlayerEvent,
+                        StringArg1 = "KEY_RELEASE",
+                        Message    = KeyStringTransformer(key)
+                    });
                     break;
             }
         }
 
+        public void KeyPress(KeyboardKey key) {
+            if (gameOver){ 
+                GalagaBus.GetBus().RegisterEvent(new GameEvent {
+                    EventType  = GameEventType.GameStateEvent,
+                    StringArg1 = "CHANGE_STATE",
+                    Message    = "MAIN_MENU"
+                });
+            } else {
+                GalagaBus.GetBus().RegisterEvent(new GameEvent {
+                    EventType  = GameEventType.PlayerEvent,
+                    StringArg1 = "KEY_PRESS",
+                    Message    = KeyStringTransformer(key)
+                });
+            }
+        }
     }
 }

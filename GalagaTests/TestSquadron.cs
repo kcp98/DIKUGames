@@ -1,7 +1,7 @@
 using Galaga.GalagaStates;
 using Galaga;
 using NUnit.Framework;
-using DIKUArcade.EventBus;
+using DIKUArcade.Events;
 using System.Collections.Generic;
 using Galaga.Squadron;
 using DIKUArcade.Graphics;
@@ -17,7 +17,7 @@ namespace GalagaTests {
 
         [SetUp]
         public void InitiateSquadrons() {
-            DIKUArcade.Window.CreateOpenGLContext();
+            DIKUArcade.GUI.Window.CreateOpenGLContext();
             images = ImageStride.CreateStrides(4, Path.Combine("Assets", "Images", "BlueMonster.png"));
             imagesAlternatives = ImageStride.CreateStrides(2, Path.Combine("Assets", "Images", "RedMonster.png"));
         }

@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using Galaga;
 using DIKUArcade.Entities;
-using DIKUArcade.EventBus;
+using DIKUArcade.Events;
 using DIKUArcade.Math;
 using System.Collections.Generic;
 using Galaga.MovementStrategy;
