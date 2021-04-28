@@ -1,25 +1,22 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Text.RegularExpressions;
+using System.IO;
 using System;
 
 namespace Breakout.LevelLoading {
     public class LoadLevelData {
 
         private string filename;
-
-        public int mapHeight = 0;
-        public int mapWidth  = 0;
+        public int mapHeight;
+        public int mapWidth;
 
         public List<string> map = new List<string> {};
         public Dictionary<string, string> meta   = new Dictionary<string, string>();
         public Dictionary<string, string> legend = new Dictionary<string, string>();
 
         public LoadLevelData(string filename, string prefix = "") {
-            this.filename = filename;
-
-            // Looked in the wrong place when testing
-            string[] lines = System.IO.File.ReadAllLines(
+            this.filename  = filename;
+            string[] lines = File.ReadAllLines(
                 Path.Combine(prefix + "Assets", "Levels", filename)
             );
             ValidateFile(lines);
@@ -56,7 +53,7 @@ namespace Breakout.LevelLoading {
         /// and ensures that it has appropriate dimensions. </summary>
         private void GetMap(string[] lines) {
             bool field = false;
-            int  width = 0, height = 0;
+            int  width = 0;
             foreach (string line in lines) {
                 if (line == "Map/")
                     break;
@@ -64,7 +61,6 @@ namespace Breakout.LevelLoading {
                     if (line.Length == width || width == 0) {
                         map.Add(line);
                         width = line.Length;
-                        height++;
                     } else {
                         throw new FileLoadException(
                             filename + " has unequal row widths."
@@ -74,13 +70,8 @@ namespace Breakout.LevelLoading {
                 if (line == "Map:")
                     field = true;
             }
-            if (width * 2 != height)
-                throw new FileLoadException(
-                    filename + " does not have 1:2 dimensions."
-                );
-            else
-                mapHeight = height;
-                mapWidth  = width;
+            mapHeight = map.Count;
+            mapWidth  = width;
         }
 
         /// <summmary> Gets the meta field from the file. </summary>

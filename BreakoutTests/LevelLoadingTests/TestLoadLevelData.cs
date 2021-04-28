@@ -1,8 +1,4 @@
 using NUnit.Framework;
-using Breakout;
-using DIKUArcade.Entities;
-using DIKUArcade.Events;
-using DIKUArcade.Math;
 using System.Collections.Generic;
 using Breakout.LevelLoading;
 
@@ -10,35 +6,47 @@ namespace BreakoutTests {
     [TestFixture]
     public class TestLoadLevelData {
 
-        private LoadLevelData levelData;
+        [Test] // R.1
+        public void TestDifferentMetaData() {
+            LoadLevelData level1 = new LoadLevelData("level1.txt", "../../../");
+            LoadLevelData level2 = new LoadLevelData("level2.txt", "../../../");
 
-        [SetUp]
-        public void InitiateLoadLevelData() {
-            
+            Assert.AreEqual(true,  level1.meta.ContainsKey("Hardened"));
+            Assert.AreEqual(false, level2.meta.ContainsKey("Hardened"));
         }
 
+        [Test] // R.2
+        public void TestDataStructures() {
+            LoadLevelData wall = new LoadLevelData("wall.txt", "../../../");
+            List<string> expectedMap = new List<string>() {
+                "------------", "------------", "------------", "------------", "------------",
+                "------------", "#%#%#%#%#%#%", "#%#%#%#%#%#%", "#%#%#%#%#%#%", "#%#%#%#%#%#%",
+                "#%#%#%#%#%#%", "#%#%#%#%#%#%", "#%#%#%#%#%#%", "#%#%#%#%#%#%", "#%#%#%#%#%#%",
+                "#%#%#%#%#%#%", "#%#%#%#%#%#%", "#%#%#%#%#%#%", "------------", "------------",
+                "------------", "------------", "------------", "------------",
+            };
+            Assert.AreEqual(expectedMap, wall.map);
 
-        // R.1 - It can handle differences in the metadata.
-        // I.e. not every file has the same metadata fields.
+            Dictionary<string, string> expectedMeta = new Dictionary<string, string>() {
+                {"Name", "Wall"}
+            };
+            Assert.AreEqual(expectedMeta, wall.meta);
 
+            Dictionary<string, string> expectedLegend = new Dictionary<string, string>() {
+                {"#", "red-block.png"},
+                {"%", "orange-block.png"}
+            };
+            Assert.AreEqual(expectedLegend, wall.legend);
 
-        // R.2 - The data read from the file is stored as
-        // expected in data structures. I.e. create the data
-        // structure as you would expect it to be and prove
-        // that it is as such when read from the file.
+            Assert.AreEqual(24, wall.mapHeight);
+            Assert.AreEqual(12, wall.mapWidth);
+        }
 
-
-
-        // R.3 - Empty or invalid files are handled without
-        // crashing the program.
-        [Test]
+        [Test] // R.3
         public void TestErrorHandling() {
             Assert.Throws<System.IO.FileLoadException>(
-                delegate { levelData = new LoadLevelData("invalid.txt", "../../../"); }
+                delegate { new LoadLevelData("invalid.txt", "../../../"); }
             );
         }
-
-
-
     }
 }

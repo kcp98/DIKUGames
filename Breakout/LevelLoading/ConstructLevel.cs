@@ -1,21 +1,16 @@
 using DIKUArcade.Entities;
-using DIKUArcade;
-using Breakout;
-using Breakout.LevelLoading;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-
-
 using System.IO;
 
 namespace Breakout.LevelLoading {
-    class ConstructLevel {
+    public class ConstructLevel {
 
         private LoadLevelData levelData;
         public EntityContainer<Blocks> theBlocks { get; }
 
-        public ConstructLevel(string filename) {
-            levelData = new LoadLevelData(filename);
+        public ConstructLevel(string filename, string prefix = "") {
+            levelData = new LoadLevelData(filename, prefix);
             theBlocks = new EntityContainer<Blocks>(levelData.mapWidth * levelData.mapHeight);
             PlaceBlocks();
         }
@@ -27,7 +22,7 @@ namespace Breakout.LevelLoading {
         private void PlaceBlocks() {
             float y = 1f;
             float x = 0f;
-            // We set the border of the map to 0.2f y, so there is room for the player
+            // Set the border of the map to 0.2f y, so there is room for the player
             float dy = 0.8f / levelData.mapHeight;
             float dx = 1f   / levelData.mapWidth;
 

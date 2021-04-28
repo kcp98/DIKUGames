@@ -18,20 +18,22 @@ namespace Breakout {
         public void Move() {
             if (moveLeft)  { base.Shape.Position.X -= MOVEMENT_SPEED; }
             if (moveRight) { base.Shape.Position.X += MOVEMENT_SPEED; }
-            if (base.Shape.Position.X > 0.9f) { base.Shape.Position.X = 0.9f; }
+            // with the players current extent the x coordinate of the player can't ecxeed 0.7
+            // without moving outside the window.
+            if (base.Shape.Position.X > 0.7f) { base.Shape.Position.X = 0.7f; }
             if (base.Shape.Position.X < 0.0f) { base.Shape.Position.X = 0.0f; }
             base.Shape.Move();
         }
         
-        public void SetMoveRight(string action) {
+        private void SetMoveRight(string action) {
             if (action == "RELEASE") {                
                 moveRight = false;
             } else {
                 moveRight = true;
-            
             }
         }
-        public void SetMoveLeft(string action) {
+        
+        private void SetMoveLeft(string action) {
             if (action == "RELEASE") {
                 moveLeft = false;
             } else {
@@ -50,7 +52,6 @@ namespace Breakout {
                 default:
                     break;
             }
-
         }
     }
 }
