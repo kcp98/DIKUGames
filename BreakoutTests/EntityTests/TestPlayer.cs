@@ -5,7 +5,7 @@ using DIKUArcade.Events;
 using DIKUArcade.Math;
 using System.Collections.Generic;
 
-namespace GalagaTests {
+namespace BreakoutTests {
     [TestFixture]
     public class PlayerTesting {
         private Player player;

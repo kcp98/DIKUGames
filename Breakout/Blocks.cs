@@ -12,8 +12,8 @@ namespace Breakout{
         //private int value = 10;
         public bool isHit { get; private set;} = false;
 
-        public Blocks(Vec2F pos, IBaseImage image, int blockHealthMultiple) : base(
-            new DynamicShape(pos, new Vec2F(0.3f, 0.5f)), image){
+        public Blocks(Vec2F pos, Vec2F extent, IBaseImage image, int blockHealthMultiple) : base(
+            new DynamicShape(pos, extent), image){
                 if((blockHealthMultiple > 0) && (blockHealthMultiple <= 5)){
                     this.health = 5 * blockHealthMultiple;
                 }else {

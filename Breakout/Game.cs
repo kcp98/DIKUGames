@@ -5,11 +5,13 @@ using DIKUArcade.Input;
 using System.Collections.Generic;
 using DIKUArcade.Graphics;
 using System.IO;
+using Breakout.LevelLoading;
 
 namespace Breakout {
     public class Game : DIKUGame {
         private Player player;
         private GameEventBus eventBus;
+        private ConstructLevel level;
 
         public Game(WindowArgs winArgs) : base(winArgs) {
             window.SetKeyEventHandler(KeyHandler);
@@ -28,6 +30,7 @@ namespace Breakout {
 
             eventBus.Subscribe(GameEventType.PlayerEvent, player);
 
+            level = new ConstructLevel("level1.txt");
         }
 
         private void KeyHandler(KeyboardAction action, KeyboardKey key) {
@@ -65,6 +68,7 @@ namespace Breakout {
 
         public override void Render() {
             player.RenderEntity();
+            level.Render();
         }
     }
 }

@@ -5,15 +5,20 @@ using DIKUArcade.Events;
 using DIKUArcade.Math;
 using System.Collections.Generic;
 
-namespace GalagaTests {
+namespace BreakoutTests {
     [TestFixture]
     public class BlockTesting {
         private Blocks block;
         //private GameEventBus eventBus;
 
         [SetUp]
-        public void InitiatePlayer() {
-            block   = new Blocks(new Vec2F(0.7f, 0.3f), null, 3);
+        public void InitiateBlocks() {
+            block   = new Blocks(
+                new Vec2F(0.7f, 0.3f),
+                new Vec2F(0.7f, 0.3f),
+                null,
+                3
+            );
             //eventBus = new GameEventBus();
         }
 
