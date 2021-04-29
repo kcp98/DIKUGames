@@ -8,16 +8,16 @@ namespace Breakout {
     public class Player : Entity, IGameEventProcessor {
         private bool moveLeft = false;
         private bool moveRight = false;
-        const float MOVEMENT_SPEED = 0.01f;
+        public const float movementSpeed = 0.01f;
 
         public Player(IBaseImage image) : base(
-            new DynamicShape( new Vec2F(0.5f, 0.05f), new Vec2F(0.3f, 0.05f)),
+            new DynamicShape( new Vec2F(0.35f, 0.05f), new Vec2F(0.3f, 0.05f)),
             image
         ) {}
         
         public void Move() {
-            if (moveLeft)  { base.Shape.Position.X -= MOVEMENT_SPEED; }
-            if (moveRight) { base.Shape.Position.X += MOVEMENT_SPEED; }
+            if (moveLeft)  { base.Shape.Position.X -= movementSpeed; }
+            if (moveRight) { base.Shape.Position.X += movementSpeed; }
             // with the players current extent the x coordinate of the player can't ecxeed 0.7
             // without moving outside the window.
             if (base.Shape.Position.X > 0.7f) { base.Shape.Position.X = 0.7f; }

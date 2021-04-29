@@ -42,6 +42,7 @@ namespace Breakout {
                 case KeyboardKey.Escape:
                     window.CloseWindow();
                     break;
+                case KeyboardKey.D:
                 case KeyboardKey.Right:
                     eventBus.RegisterEvent(new GameEvent {
                         EventType  = GameEventType.PlayerEvent,
@@ -50,6 +51,7 @@ namespace Breakout {
                     });
                     break;
                 case KeyboardKey.Left:
+                case KeyboardKey.A:
                     eventBus.RegisterEvent(new GameEvent {
                         EventType  = GameEventType.PlayerEvent,
                         StringArg1 = actionString,
