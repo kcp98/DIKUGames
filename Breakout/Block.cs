@@ -1,25 +1,21 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-using DIKUArcade.Events;
-using DIKUArcade.Input;
 
-namespace Breakout{
-
-    public class Blocks : Entity {
+namespace Breakout {
+    public class Block : Entity {
 
         public int health { get; private set; }
         //private int value = 10;
         public bool isHit { get; private set;} = false;
 
-        public Blocks(Vec2F pos, Vec2F extent, IBaseImage image, int blockHealthMultiple) : base(
+        public Block(Vec2F pos, Vec2F extent, IBaseImage image, int blockHealthMultiple) : base(
             new DynamicShape(pos, extent), image){
                 if((blockHealthMultiple > 0) && (blockHealthMultiple <= 5)){
                     this.health = 5 * blockHealthMultiple;
                 }else {
                     this.health = 5;
                 }
-                
         }
     
         public void Damage(){

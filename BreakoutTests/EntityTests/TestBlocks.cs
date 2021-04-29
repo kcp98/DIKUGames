@@ -8,12 +8,12 @@ using System.Collections.Generic;
 namespace BreakoutTests {
     [TestFixture]
     public class BlockTesting {
-        private Blocks block;
+        private Block block;
         //private GameEventBus eventBus;
 
         [SetUp]
         public void InitiateBlocks() {
-            block   = new Blocks(
+            block   = new Block(
                 new Vec2F(0.7f, 0.3f),
                 new Vec2F(0.7f, 0.3f),
                 null,

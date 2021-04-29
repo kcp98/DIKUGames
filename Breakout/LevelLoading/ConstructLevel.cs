@@ -7,16 +7,16 @@ namespace Breakout.LevelLoading {
     public class ConstructLevel {
 
         private LoadLevelData levelData;
-        public EntityContainer<Blocks> theBlocks { get; }
+        public EntityContainer<Block> Blocks { get; }
 
         public ConstructLevel(string filename, string prefix = "") {
             levelData = new LoadLevelData(filename, prefix);
-            theBlocks = new EntityContainer<Blocks>(levelData.mapWidth * levelData.mapHeight);
+            Blocks    = new EntityContainer<Block>(levelData.mapWidth * levelData.mapHeight);
             PlaceBlocks();
         }
 
         public void Render() {
-            theBlocks.RenderEntities();
+            Blocks.RenderEntities();
         }
         
         private void PlaceBlocks() {
@@ -34,8 +34,8 @@ namespace Breakout.LevelLoading {
                             Path.Combine("Assets", "Images", levelData.legend[block])
                         );
                         Vec2F extent = new Vec2F(0.0833f, 0.04167f);
-                        theBlocks.AddEntity(
-                            new Blocks(new Vec2F(x, y), new Vec2F(dx, dy), image, 2)
+                        Blocks.AddEntity(
+                            new Block(new Vec2F(x, y), new Vec2F(dx, dy), image, 2)
                         );
                     }
                     x += dx;
