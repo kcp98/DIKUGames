@@ -21,6 +21,9 @@ namespace Breakout {
         public void Damage(){
             if(isHit){
                 --this.health;
+                if(this.health <= 0){
+                    base.DeleteEntity();
+                }
                 isHit = false;
             }
         }
