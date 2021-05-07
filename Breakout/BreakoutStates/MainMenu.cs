@@ -1,7 +1,5 @@
 using DIKUArcade.State;
 using DIKUArcade.Input;
-
-
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
@@ -68,9 +66,8 @@ namespace Breakout.BreakoutStates {
                     if (activeButton == 0) {
                         GameRunning.GetGameRunning().ResetState();
                         BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType  = GameEventType.GameStateEvent,
-                            StringArg1 = "CHANGE_STATE",
-                            Message    = "GameRunning"
+                            EventType = GameEventType.GameStateEvent,
+                            Message   = "GameRunning"
                         });
                     }
                     else

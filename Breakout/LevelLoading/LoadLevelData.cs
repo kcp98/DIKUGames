@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.IO;
-using System;
 
 namespace Breakout.LevelLoading {
     public class LoadLevelData {
@@ -21,8 +20,8 @@ namespace Breakout.LevelLoading {
             );
             ValidateFile(lines);
             GetMap(lines);
-            GetMeta(lines);
             GetLegend(lines);
+            GetMeta(lines);
         }
 
         /// <summary> Throws an exception with invalid or empty files.
@@ -74,7 +73,7 @@ namespace Breakout.LevelLoading {
             mapWidth  = width;
         }
 
-        /// <summmary> Gets the meta field from the file. </summary>
+        /// <summmary> Gets the meta field from the file. Call after GetLegend. </summary>
         private void GetMeta(string[] lines) {
             bool field = false;
             foreach (string line in lines) {
@@ -82,7 +81,10 @@ namespace Breakout.LevelLoading {
                     break;
                 if (field) {
                     string[] strings = line.Split(": ");
-                    meta[strings[0]] = strings[1];
+                    if (legend.ContainsKey(strings[1]))
+                        meta[strings[1]] = strings[0];
+                    else
+                        meta[strings[0]] = strings[1];
                 }
                 if (line == "Meta:") 
                     field = true;

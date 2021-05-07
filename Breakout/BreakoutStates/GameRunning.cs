@@ -1,13 +1,10 @@
 using DIKUArcade.State;
 using DIKUArcade.Input;
-
-
 using DIKUArcade.Events;
 using System.Collections.Generic;
 using DIKUArcade.Graphics;
 using System.IO;
 using Breakout.LevelLoading;
-
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 
@@ -51,14 +48,13 @@ namespace Breakout.BreakoutStates {
         }
 
         private void UpdateLevel() {
-            if (currentLevel == levels.Count - 1)
+            if (++currentLevel == levels.Count)
                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                     EventType  = GameEventType.GameStateEvent,
-                    StringArg1 = "actionString",
                     Message    = "MainMenu"
                 });
             else
-                level = new ConstructLevel(levels[++currentLevel]);
+                level = new ConstructLevel(levels[currentLevel]);
         }
 
         public void ResetState() {
@@ -77,10 +73,9 @@ namespace Breakout.BreakoutStates {
         }
 
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {
-            var actionString = "PRESS";
-            if (action == KeyboardAction.KeyRelease) {
+            string actionString = "PRESS";
+            if (action == KeyboardAction.KeyRelease)
                 actionString = "RELEASE";
-            }
             switch (key) {
                 case KeyboardKey.Right:
                     BreakoutBus.GetBus().RegisterEvent(new GameEvent {
@@ -102,9 +97,8 @@ namespace Breakout.BreakoutStates {
                     break;
                 case KeyboardKey.P:
                     BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                        EventType  = GameEventType.GameStateEvent,
-                        StringArg1 = "CHANGE_STATE",
-                        Message    = "GamePaused"
+                        EventType = GameEventType.GameStateEvent,
+                        Message   = "GamePaused"
                     });
                     break;
                 default:

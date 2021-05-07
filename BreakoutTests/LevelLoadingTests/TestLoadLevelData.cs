@@ -8,11 +8,11 @@ namespace BreakoutTests {
 
         [Test] // R.1
         public void TestDifferentMetaData() {
+            LoadLevelData columns = new LoadLevelData("columns.txt", "../../../");
             LoadLevelData level1 = new LoadLevelData("level1.txt", "../../../");
-            LoadLevelData level2 = new LoadLevelData("level2.txt", "../../../");
 
-            Assert.AreEqual(true,  level1.meta.ContainsKey("Hardened"));
-            Assert.AreEqual(false, level2.meta.ContainsKey("Hardened"));
+            Assert.AreEqual(false, columns.meta.ContainsKey("Time"));
+            Assert.AreEqual(true,   level1.meta.ContainsKey("Time"));
         }
 
         [Test] // R.2

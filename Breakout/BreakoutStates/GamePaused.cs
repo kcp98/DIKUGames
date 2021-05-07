@@ -1,13 +1,10 @@
 using DIKUArcade.State;
 using DIKUArcade.Input;
-
-
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using System.IO;
 using DIKUArcade.Events;
-using System;
 
 
 namespace Breakout.BreakoutStates {
@@ -66,19 +63,14 @@ namespace Breakout.BreakoutStates {
                     activeButton = 1;
                     break;
                 case KeyboardKey.Enter:
-                    if (activeButton == 0) {
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType  = GameEventType.GameStateEvent,
-                            StringArg1 = "CHANGE_STATE",
-                            Message    = "MainMenu"
-                        });
-                    }
-                    else
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType  = GameEventType.GameStateEvent,
-                            StringArg1 = "CHANGE_STATE",
-                            Message    = "GameRunning"
-                        });
+                    string state = "MainMenu";
+                    if (activeButton == 1)
+                        state = "GameRunning";
+                        
+                    BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                        EventType = GameEventType.GameStateEvent,
+                        Message   = state
+                    });
                     break;
                 default: 
                     break;
