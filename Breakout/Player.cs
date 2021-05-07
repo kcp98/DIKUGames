@@ -11,7 +11,7 @@ namespace Breakout {
         public const float movementSpeed = 0.01f;
 
         public Player(IBaseImage image) : base(
-            new DynamicShape( new Vec2F(0.35f, 0.05f), new Vec2F(0.3f, 0.05f)),
+            new DynamicShape( new Vec2F(0.35f, 0.05f), new Vec2F(0.15f, 0.025f)),
             image
         ) {}
         
@@ -20,7 +20,7 @@ namespace Breakout {
             if (moveRight) { base.Shape.Position.X += movementSpeed; }
             // with the players current extent the x coordinate of the player can't ecxeed 0.7
             // without moving outside the window.
-            if (base.Shape.Position.X > 0.7f) { base.Shape.Position.X = 0.7f; }
+            if (base.Shape.Position.X > 0.85f) { base.Shape.Position.X = 0.85f; }
             if (base.Shape.Position.X < 0.0f) { base.Shape.Position.X = 0.0f; }
             base.Shape.Move();
         }
