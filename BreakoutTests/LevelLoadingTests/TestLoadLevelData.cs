@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using Breakout.LevelLoading;
+using System.IO;
 
 namespace BreakoutTests {
     [TestFixture]
@@ -8,8 +9,12 @@ namespace BreakoutTests {
 
         [Test] // R.1
         public void TestDifferentMetaData() {
-            LoadLevelData columns = new LoadLevelData("columns.txt", "../../../");
-            LoadLevelData level1 = new LoadLevelData("level1.txt", "../../../");
+            LoadLevelData columns = new LoadLevelData(
+                Path.Combine( "../../../" + "Assets", "Levels", "columns.txt")
+            );
+            LoadLevelData level1 = new LoadLevelData(
+                 Path.Combine( "../../../" + "Assets", "Levels", "level1.txt")
+            );
 
             Assert.AreEqual(false, columns.meta.ContainsKey("Time"));
             Assert.AreEqual(true,   level1.meta.ContainsKey("Time"));
@@ -17,7 +22,9 @@ namespace BreakoutTests {
 
         [Test] // R.2
         public void TestDataStructures() {
-            LoadLevelData wall = new LoadLevelData("wall.txt", "../../../");
+            LoadLevelData wall = new LoadLevelData(
+                Path.Combine( "../../../" + "Assets", "Levels", "wall.txt")
+            );
             List<string> expectedMap = new List<string>() {
                 "------------", "------------", "------------", "------------", "------------",
                 "------------", "#%#%#%#%#%#%", "#%#%#%#%#%#%", "#%#%#%#%#%#%", "#%#%#%#%#%#%",
@@ -45,7 +52,9 @@ namespace BreakoutTests {
         [Test] // R.3
         public void TestErrorHandling() {
             Assert.Throws<System.IO.FileLoadException>(
-                delegate { new LoadLevelData("invalid.txt", "../../../"); }
+                delegate { new LoadLevelData(
+                    Path.Combine( "../../../" + "Assets", "Levels", "invalid.txt")
+                ); }
             );
         }
     }

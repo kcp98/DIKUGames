@@ -9,8 +9,8 @@ namespace Breakout.LevelLoading {
         private LoadLevelData levelData;
         public EntityContainer<Block> Blocks { get; }
 
-        public ConstructLevel(string filename, string prefix = "") {
-            levelData = new LoadLevelData(filename, prefix);
+        public ConstructLevel(string filename) {
+            levelData = new LoadLevelData(Path.Combine("Assets", "Levels", filename));
             Blocks    = new EntityContainer<Block>(levelData.mapWidth * levelData.mapHeight);
             PlaceBlocks();
         }
@@ -19,6 +19,8 @@ namespace Breakout.LevelLoading {
             Blocks.RenderEntities();
         }
         
+        /// <summary> Place the blocks in the formation given by the levelData's map.
+        /// The maps extent in y is 1.0 -> 0.2 and x is 0 -> 1. </summary>
         private void PlaceBlocks() {
             float dx = 1f   / levelData.mapWidth;
             float dy = 0.8f / levelData.mapHeight;

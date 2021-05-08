@@ -5,7 +5,7 @@ using System.IO;
 namespace Breakout.LevelLoading {
     public class LoadLevelData {
 
-        private string filename;
+        private string path;
         public int mapHeight;
         public int mapWidth;
 
@@ -13,11 +13,9 @@ namespace Breakout.LevelLoading {
         public Dictionary<string, string> meta   = new Dictionary<string, string>();
         public Dictionary<string, string> legend = new Dictionary<string, string>();
 
-        public LoadLevelData(string filename, string prefix = "") {
-            this.filename  = filename;
-            string[] lines = File.ReadAllLines(
-                Path.Combine(prefix + "Assets", "Levels", filename)
-            );
+        public LoadLevelData(string path) {
+            this.path = path;
+            string[] lines = File.ReadAllLines(path);
             ValidateFile(lines);
             GetMap(lines);
             GetLegend(lines);
@@ -34,17 +32,17 @@ namespace Breakout.LevelLoading {
             Regex Map = new Regex(@"Map:.*Map/");
             if (!Map.IsMatch(contents))
                 throw new FileLoadException(
-                    filename + " does not contain valid Map."
+                    path + " does not contain valid Map."
                 );
             Regex Meta = new Regex(@"Meta:[[a-zA-Z0-9]+: .+]*Meta/");
             if (!Meta.IsMatch(contents))
                 throw new FileLoadException(
-                    filename + " does not contain valid Meta."
+                    path + " does not contain valid Meta."
                 );
             Regex Legend = new Regex(@"Legend:(.\) [a-zA-Z\-]+\.png)*Legend/");
             if (!Legend.IsMatch(contents))
                 throw new FileLoadException(
-                    filename + " does not contain valid Legend."
+                    path + " does not contain valid Legend."
                 );
         }
 
@@ -62,7 +60,7 @@ namespace Breakout.LevelLoading {
                         width = line.Length;
                     } else {
                         throw new FileLoadException(
-                            filename + " has unequal row widths."
+                            path + " has unequal row widths."
                         );
                     }
                 }

@@ -11,11 +11,7 @@ namespace Breakout.BreakoutStates {
         }
 
         public void ProcessEvent(GameEvent gameEvent) {
-            SwitchState(gameEvent.Message);
-        }
-
-        public void SwitchState(string state) {
-            switch (state) {
+            switch (gameEvent.Message) {
                 case "GameRunning":
                     ActiveState = GameRunning.GetGameRunning();
                     break;
