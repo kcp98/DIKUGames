@@ -2,7 +2,6 @@ using DIKUArcade;
 using DIKUArcade.GUI;
 using DIKUArcade.Events;
 using DIKUArcade.Input;
-using Breakout.LevelLoading;
 using Breakout.BreakoutStates;
 using System.Collections.Generic;
 
@@ -24,14 +23,7 @@ namespace Breakout {
         }
 
         private void KeyHandler(KeyboardAction action, KeyboardKey key) {
-            switch (key) {
-                case KeyboardKey.Escape:
-                    window.CloseWindow();
-                    break;
-                default:
-                    stateMachine.ActiveState.HandleKeyEvent(action, key);
-                    break;
-            }
+            stateMachine.ActiveState.HandleKeyEvent(action, key);
         }
 
         public override void Update() {

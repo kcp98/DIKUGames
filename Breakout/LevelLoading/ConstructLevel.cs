@@ -7,16 +7,24 @@ namespace Breakout.LevelLoading {
     public class ConstructLevel {
 
         private LoadLevelData levelData;
-        public EntityContainer<Block> Blocks { get; }
+        public EntityContainer<Block> blocks { get; }
 
         public ConstructLevel(string filename) {
             levelData = new LoadLevelData(Path.Combine("Assets", "Levels", filename));
-            Blocks    = new EntityContainer<Block>(levelData.mapWidth * levelData.mapHeight);
+            blocks    = new EntityContainer<Block>(levelData.mapWidth * levelData.mapHeight);
             PlaceBlocks();
         }
 
         public void Render() {
-            Blocks.RenderEntities();
+            blocks.RenderEntities();
+        }
+
+        public bool IsFinished() {
+            foreach (Entity entity in blocks)
+                // TODO add isBreakable property to all the coming blocks
+                if (entity is Block)
+                    return false;
+            return true;
         }
         
         /// <summary> Place the blocks in the formation given by the levelData's map.
@@ -34,7 +42,7 @@ namespace Breakout.LevelLoading {
                         IBaseImage image = new Image(
                             Path.Combine("Assets", "Images", levelData.legend[block])
                         );
-                        Blocks.AddEntity(
+                        blocks.AddEntity(
                             new Block(new Vec2F(x, y), new Vec2F(dx, dy), image, 2)
                         );
                     }
