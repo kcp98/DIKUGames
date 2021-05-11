@@ -1,89 +1,78 @@
 using NUnit.Framework;
 using Breakout;
-using DIKUArcade.Entities;
 using DIKUArcade.Events;
-using DIKUArcade.Math;
-using System.Collections.Generic;
 
 namespace BreakoutTests {
     [TestFixture]
     public class PlayerTesting {
         Player player;
-        GameEventBus eventBus;
-
-        float initialPositionX = 0.35f;
-
-        float movementSpeed = Breakout.Player.movementSpeed;
 
         [SetUp]
-        public void InitiatePlayer() {      
-            player   = new Player(null);
-            eventBus = new GameEventBus();
-            eventBus.InitializeEventBus(
-                new List<GameEventType> {
-                    GameEventType.PlayerEvent});
-            eventBus.Subscribe(GameEventType.PlayerEvent, player);
+        public void InitiatePlayer() {
+            DIKUArcade.GUI.Window.CreateOpenGLContext();   
+            player = new Player();
         }
 
         [Test]
         // Testing that the player starts in the bottom-center of the screen.
         public void InitialPositionTest() {
-            Assert.AreEqual(player.Shape.Position.X, initialPositionX);
-            Assert.True((player.Shape.Position.Y - 0.05f) < 1E-10f);    
+            Assert.LessOrEqual(player.Shape.Position.X, 0.5f);
+            Assert.GreaterOrEqual(
+                player.Shape.Position.X + player.Shape.Extent.X, 0.5f);
+            Assert.LessOrEqual(player.Shape.Position.Y, 0.5f);    
         }
 
         // Testing that the player can move using the right/left arrows or the a/d keys.
         [Test]
         public void TestMoveRight() {  
             player.ProcessEvent(new GameEvent {
-                        EventType  = GameEventType.PlayerEvent,
-                        StringArg1 = "PRESS",
-                        Message    = "RIGHT"
-                    });
+                EventType  = GameEventType.PlayerEvent,
+                StringArg1 = "KeyPress",
+                Message    = "Right"
+            });
+            float before = player.Shape.Position.X;
             player.Move();
-            Assert.True(player.Shape.Position.X - (initialPositionX + movementSpeed) < 1E-10);
+            Assert.Greater(player.Shape.Position.X, before);
         }
         [Test]
         // Testing that the player can move using the right/left arrows or the a/d keys.
         public void TestMoveLeft() {        
             player.ProcessEvent(new GameEvent {
-                        EventType  = GameEventType.PlayerEvent,
-                        StringArg1 = "PRESS",
-                        Message    = "LEFT"
-                    });
+                EventType  = GameEventType.PlayerEvent,
+                StringArg1 = "KeyPress",
+                Message    = "Left"
+            });
+            float before = player.Shape.Position.X;
             player.Move();
-            Assert.True((initialPositionX - movementSpeed) - player.Shape.Position.X < 1E-10);
+            Assert.Less(player.Shape.Position.X, before);
         }
         
         [Test] 
         // Testing that the player cannot leave the screen.
         public void TestLeftSide() {  
-            for (int i = 0; i < 100; i++)
-            {
-                player.ProcessEvent(new GameEvent {
-                        EventType  = GameEventType.PlayerEvent,
-                        StringArg1 = "PRESS",
-                        Message    = "LEFT"
-                    });
+            player.ProcessEvent(new GameEvent {
+                EventType  = GameEventType.PlayerEvent,
+                StringArg1 = "KeyPress",
+                Message    = "Left"
+            });
+            for (int i = 0; i < 100; i++) {
                 player.Move();
-            }   
-    
-            Assert.True((player.Shape.Position.X >= 0f)
-                 && (0.0f - player.Shape.Position.X < 1E-10));
+            }
+            Assert.GreaterOrEqual(player.Shape.Position.X, 0f);
         }
+
         [Test] 
         // Testing that the player cannot leave the screen.
         public void TestRightSide() {  
-            for (int i = 0; i < 100; i++)
-            {
-                player.ProcessEvent(new GameEvent {
-                        EventType  = GameEventType.PlayerEvent,
-                        StringArg1 = "PRESS",
-                        Message    = "RIGHT"
-                    });
+            player.ProcessEvent(new GameEvent {
+                EventType  = GameEventType.PlayerEvent,
+                StringArg1 = "PRESS",
+                Message    = "RIGHT"
+            });
+            for (int i = 0; i < 100; i++) {
                 player.Move();
             }   
-            Assert.True(0.7f - player.Shape.Position.X < 1E-10);
+            Assert.LessOrEqual(player.Shape.Position.X, 1f);
         }
     }
 
