@@ -2,6 +2,8 @@ using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using System.IO;
+using Breakout.Blocks;
+using System.Collections.Generic;
 
 namespace Breakout.LevelLoading {
     public class ConstructLevel {
@@ -39,12 +41,11 @@ namespace Breakout.LevelLoading {
                 foreach (char c in line) {
                     string block = c.ToString();
                     if (levelData.legend.ContainsKey(block)) {
-                        IBaseImage image = new Image(
-                            Path.Combine("Assets", "Images", levelData.legend[block])
-                        );
-                        blocks.AddEntity(
-                            new Block(new Vec2F(x, y), new Vec2F(dx, dy), image, 2)
-                        );
+                        blocks.AddEntity(ConstructBlock.CreateBlock(
+                            new Vec2F(x, y), new Vec2F(dx, dy),
+                            levelData.legend[block],
+                            levelData.meta.GetValueOrDefault(block)
+                        ));
                     }
                     x += dx;
                 }

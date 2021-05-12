@@ -19,7 +19,8 @@ namespace Breakout.BreakoutStates {
             "central-mass.txt",
             "level1.txt",
             "level2.txt",
-            "level3.txt"
+            "level3.txt",
+            "level4.txt"
         };
         private Entity background;
         private int currentLevel;
@@ -94,7 +95,7 @@ namespace Breakout.BreakoutStates {
             ball.CheckCollision(player);
             level.blocks.Iterate(block => {
                 if (ball.CheckCollision(block))
-                    block.GetHit("HIT");
+                    block.GetHit();
             });
         }
 
