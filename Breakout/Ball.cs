@@ -9,14 +9,14 @@ namespace Breakout{
 
     public class Ball : Entity {
         
-        private const float middle = 0.015f;
+        private const float extent = 0.03f;
         private const float speed  = 0.01f;
         private EntityContainer<Entity> borders = new EntityContainer<Entity>();
 
         public Ball() : base(
             new DynamicShape(
                 new Vec2F(0, 0.075f),
-                new Vec2F(2 * middle, 2 * middle),
+                new Vec2F(extent, extent),
                 new Vec2F(0, speed)
             ),
             new Image(Path.Combine("Assets", "Images", "ball.png"))
@@ -35,14 +35,14 @@ namespace Breakout{
             );
         }
 
-        /// <summary> Calcuates the angle of the direction vector after collission,
-        /// relative to the position and extent of the object of collission. </summary>
+        /// <summary> Calcuates the angle of the direction vector after collision,
+        /// relative to the position and extent of the object of collision. </summary>
         /// <return> An angle in radians. </return>
         private float CalculateRelativeAngle(float hitPos, float objPos, float objExtent) {
             // Calculate how far along the object the hit occured, in percent.
-            float hitObjExtentRatio = (hitPos - objPos + middle) / objExtent;
+            float hitObjExtentRatio = (hitPos - objPos + extent / 2) / objExtent;
 
-            // A collission at the end of an object results in a 45 degree angle in that direction
+            // A collision at the end of an object results in a 45 degree angle in that direction
             float radians = MathF.PI / 4 + hitObjExtentRatio * MathF.PI / 2;
 
             // Fixes perpendicular angles, prevents the ball getting stuck on a trajectory.
@@ -51,7 +51,7 @@ namespace Breakout{
             return radians;
         }
 
-        private void VerticalCollission(Entity that) {
+        private void VerticalCollision(Entity that) {
             Vec2F direction = base.Shape.AsDynamicShape().Direction.Copy();
             float radians   = CalculateRelativeAngle(
                 this.Shape.Position.Y, that.Shape.Position.Y, that.Shape.Extent.Y
@@ -65,7 +65,7 @@ namespace Breakout{
             base.Shape.AsDynamicShape().ChangeDirection(direction);
         }
 
-        private void HorizontalCollission(Entity that) {
+        private void HorizontalCollision(Entity that) {
             Vec2F direction = base.Shape.AsDynamicShape().Direction.Copy();
             float radians   = CalculateRelativeAngle(
                 this.Shape.Position.X, that.Shape.Position.X, that.Shape.Extent.X
@@ -84,16 +84,16 @@ namespace Breakout{
         private void ChangeDirection(Entity entity, CollisionDirection collisionDirection) {
             switch  (collisionDirection) {
                 case CollisionDirection.CollisionDirLeft:
-                    VerticalCollission(entity);
+                    VerticalCollision(entity);
                     break;
                 case CollisionDirection.CollisionDirRight:
-                    VerticalCollission(entity);
+                    VerticalCollision(entity);
                     break;
                 case CollisionDirection.CollisionDirUp:
-                    HorizontalCollission(entity);
+                    HorizontalCollision(entity);
                     break;
                 case CollisionDirection.CollisionDirDown:
-                    HorizontalCollission(entity);
+                    HorizontalCollision(entity);
                     break;
                 default:
                     break;
@@ -123,8 +123,7 @@ namespace Breakout{
             float x = player.Shape.Position.X + player.Shape.Extent.X / 2f;
             float dx = x - base.Shape.Position.X - 0.015f;
 
-            if (!(x < 1e-6f && x > -1e-6f))
-                base.Shape.MoveX(dx);
+            base.Shape.MoveX(dx);
         }
     }
 }
