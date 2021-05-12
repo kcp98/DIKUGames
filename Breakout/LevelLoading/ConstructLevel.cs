@@ -23,8 +23,7 @@ namespace Breakout.LevelLoading {
 
         public bool IsFinished() {
             foreach (Entity entity in blocks)
-                // TODO add isBreakable property to all the coming blocks
-                if (entity is Block)
+                if (!(entity is Unbreakable))
                     return false;
             return true;
         }

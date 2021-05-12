@@ -70,8 +70,7 @@ namespace Breakout.BreakoutStates {
         }
 
 
-        /// <summary> Resets the level.
-        /// TODO reset the score when necessary. </summary>
+        /// <summary> Resets the level and score. </summary>
         public void ResetState() {
             currentLevel = -1;
             NextLevel();
