@@ -27,6 +27,7 @@ namespace Breakout.BreakoutStates {
         private ConstructLevel level;
         private Ball ball;
         private bool ballReleased;
+        private Score score;
 
         /// <summary> Get the GameRunning instance.
         /// If null then first instantiates the instance. </summary>
@@ -73,6 +74,8 @@ namespace Breakout.BreakoutStates {
         public void ResetState() {
             currentLevel = -1;
             NextLevel();
+            score = new Score();
+            BreakoutBus.GetBus().Subscribe(GameEventType.GameStateEvent, score);
         }
 
         /// <summary> Moves entities and checks for collissions
@@ -101,6 +104,7 @@ namespace Breakout.BreakoutStates {
             player.RenderEntity();
             ball.RenderEntity();
             level.Render();
+            score.Render();
         }
 
         /// <summary> Handles key events for moving the player, and pausing the game. </summary>

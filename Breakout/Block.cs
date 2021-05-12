@@ -1,6 +1,7 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
+using DIKUArcade.Events;
 
 namespace Breakout {
     public class Block : Entity {
@@ -12,9 +13,9 @@ namespace Breakout {
         public Block(Vec2F pos, Vec2F extent, IBaseImage image, int blockHealthMultiple) : base(
             new DynamicShape(pos, extent), image){
                 if((blockHealthMultiple > 0) && (blockHealthMultiple <= 5)){
-                    this.health = 5 * blockHealthMultiple;
+                    this.health = 1;
                 }else {
-                    this.health = 5;
+                    this.health = 1;
                 }
         }
     
@@ -29,10 +30,13 @@ namespace Breakout {
         }
 
         public void GetHit(string action){
-            if(action == "HIT"){
-                isHit = true;
-            }else {
-                isHit = false;
+            if (--health < 0) {
+                base.DeleteEntity();
+                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                            EventType = GameEventType.GameStateEvent,
+                            Message   = "AddPoints",
+                            IntArg1   = 1
+                        });
             }
         }
     }
