@@ -5,31 +5,78 @@ using Breakout.Blocks;
 namespace BreakoutTests {
     [TestFixture]
     public class BlockTesting {
-        private Block block;
-        //private GameEventBus eventBus;
+        private Block defaultBlock;
+        private Unbreakable unbreakableBlock;
+        private Hardened hardendBlock;
 
         [SetUp]
-        public void InitiateBlocks() {
-            block = new Block(
+        public void InitiateBlocks() {}
+
+        [Test]
+        public void BlockNotHit(){
+            defaultBlock = new Block(
+                new Vec2F(0.7f, 0.3f),
+                new Vec2F(0.7f, 0.3f),
+                "green-block.png");
+
+            Assert.AreEqual(false, defaultBlock.IsDeleted());        
+        }
+
+        [Test]
+        public void DestroyingDefaul(){
+
+            defaultBlock = new Block(
+                new Vec2F(0.7f, 0.3f),
+                new Vec2F(0.7f, 0.3f),
+                "green-block.png");
+
+            defaultBlock.GetHit();
+
+            Assert.AreEqual(true, defaultBlock.IsDeleted());        
+        }
+
+        [Test]
+        public void HardenedBlockOneHit(){
+            hardendBlock = new Hardened(
                 new Vec2F(0.7f, 0.3f),
                 new Vec2F(0.7f, 0.3f),
                 "green-block.png"
             );
-            //eventBus = new GameEventBus();
+                
+            hardendBlock.GetHit();
+
+            Assert.AreEqual(false, hardendBlock.IsDeleted());        
+        }
+        [Test]
+        public void HardenedBlockTwoHits(){
+            hardendBlock = new Hardened(
+                new Vec2F(0.7f, 0.3f),
+                new Vec2F(0.7f, 0.3f),
+                "green-block.png"
+            );
+                
+            hardendBlock.GetHit();
+            hardendBlock.GetHit();
+
+            Assert.AreEqual(true, hardendBlock.IsDeleted());        
+            
         }
 
         [Test]
-        public void Test1(){}
+        public void UnbreakableBlock(){
+            unbreakableBlock = new Unbreakable(
+                new Vec2F(0.7f, 0.3f),
+                new Vec2F(0.7f, 0.3f),
+                "green-block.png"
+            );
+                
+            for (int i = 0; i < 100; i++)
+            {
+                unbreakableBlock.GetHit();
+            }
 
-        [Test]
-        public void Test2(){
-
-            block.GetHit();
-            block.GetHit();
-            block.GetHit();
-            block.GetHit();
-
-            Assert.AreEqual(true, block.IsDeleted());        
+            Assert.AreEqual(false, unbreakableBlock.IsDeleted());        
         }
+
     }
 }

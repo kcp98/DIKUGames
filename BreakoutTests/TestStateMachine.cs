@@ -26,18 +26,18 @@ namespace BreakoutTests {
         public void TestStateSwitches() {
             Assert.IsInstanceOf<MainMenu>(stateMachine.ActiveState);
 
-            BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+            eventBus.RegisterEvent(new GameEvent {
                 EventType  = GameEventType.GameStateEvent,
                 Message    = "GameRunning"
             });
-            BreakoutBus.GetBus().ProcessEventsSequentially();
+            eventBus.ProcessEventsSequentially();
             Assert.IsInstanceOf<GameRunning>(stateMachine.ActiveState);
 
-            BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+            eventBus.RegisterEvent(new GameEvent {
                 EventType  = GameEventType.GameStateEvent,
                 Message    = "GamePaused"
             });
-            BreakoutBus.GetBus().ProcessEventsSequentially();
+            eventBus.ProcessEventsSequentially();
             Assert.IsInstanceOf<GamePaused>(stateMachine.ActiveState);
         }
     }
