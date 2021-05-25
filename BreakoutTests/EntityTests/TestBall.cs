@@ -7,18 +7,21 @@ namespace BreakoutTests {
     [TestFixture]
     public class BallTesting {
         Ball ball;
+        Player player;
 
         [SetUp]
         public void InitiateBall() {
             DIKUArcade.GUI.Window.CreateOpenGLContext();
             ball = new Ball();
+            player = new Player();
         }
 
         [Test]
         public void TestCollissions() {
+            ball.Release();
             for (int i = 0; i < 11; i++ ) {
                 ball = new Ball();
-                ball.Move();
+                ball.Move(player);
                 Vec2F dir = ball.Shape.AsDynamicShape().Direction.Copy();
                 Entity entity = new Entity(
                     new DynamicShape(

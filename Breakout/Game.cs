@@ -33,6 +33,7 @@ namespace Breakout {
 
         public override void Render() {
             stateMachine.ActiveState.RenderState();
+            window.Title = "Breakout - " + stateMachine.ActiveState.ToString();
         }
     }
 }

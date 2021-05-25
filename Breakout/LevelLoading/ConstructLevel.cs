@@ -1,5 +1,4 @@
 using DIKUArcade.Entities;
-using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using System.IO;
 using Breakout.Blocks;
@@ -10,11 +9,24 @@ namespace Breakout.LevelLoading {
 
         private LoadLevelData levelData;
         public EntityContainer<Block> blocks { get; }
+        public double Time { get; }
+        public bool Timed { get; }
+        public string Title { get; }
 
         public ConstructLevel(string filename) {
             levelData = new LoadLevelData(Path.Combine("Assets", "Levels", filename));
             blocks    = new EntityContainer<Block>(levelData.mapWidth * levelData.mapHeight);
             PlaceBlocks();
+            Timed = levelData.meta.ContainsKey("Time");
+            if (Timed) {
+                try { 
+                    Time = double.Parse(levelData.meta["Time"]);
+                } catch (System.FormatException exception) {
+                    System.Console.WriteLine("Time set to default: {0}", exception.Message);
+                    Time = 100.0;
+                }
+            }
+            Title = levelData.meta.GetValueOrDefault("Name");
         }
 
         public void Render() {

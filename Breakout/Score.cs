@@ -8,7 +8,7 @@ using System;
 namespace Breakout {
     public class Score : IGameEventProcessor {
        
-        private int points;
+        public int points { get; private set; }
         private Text text;
         public Score() {
             points = 0;

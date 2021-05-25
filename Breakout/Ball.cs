@@ -12,6 +12,7 @@ namespace Breakout{
         private const float extent = 0.03f;
         private const float speed  = 0.01f;
         private EntityContainer<Entity> borders = new EntityContainer<Entity>();
+        private bool released = false;
 
         public Ball() : base(
             new DynamicShape(
@@ -112,18 +113,28 @@ namespace Breakout{
             return data.Collision;
         }
         
-        public void Move() {
-            base.Shape.Move();
-            borders.Iterate(border => {
-                CheckCollision(border);
-            });
+        public void Release() {
+            released = true;
         }
 
+        /// <summary> Moves the ball and checks collisions with border and player.
+        /// If ball not yet released, ball follows the player around.
+        /// Deletes ball if out of bounds. </summary>
         public void Move(Player player) {
-            float x = player.Shape.Position.X + player.Shape.Extent.X / 2f;
-            float dx = x - base.Shape.Position.X - 0.015f;
+            if (released) {
+                foreach (Entity border in borders) {
+                    CheckCollision(border);
+                }
+                CheckCollision(player);
+                base.Shape.Move();
 
-            base.Shape.MoveX(dx);
+                if (base.Shape.Position.Y < 0)
+                    base.DeleteEntity();
+            } else {
+                float x  = player.Shape.Position.X + player.Shape.Extent.X / 2f;
+                float dx = x - base.Shape.Position.X - 0.015f;
+                base.Shape.MoveX(dx);
+            }
         }
     }
 }

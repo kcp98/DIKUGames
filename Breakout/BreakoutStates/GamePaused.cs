@@ -36,6 +36,10 @@ namespace Breakout.BreakoutStates {
 
         }
 
+        public override string ToString() {
+            return "Paused";
+        }
+
         /// <summary> Reset the button selection. </summary>
         public void ResetState() {
             activeButton = 0;
@@ -73,7 +77,7 @@ namespace Breakout.BreakoutStates {
                     string state = "MainMenu";
                     if (activeButton == 1)
                         state = "GameRunning";
-                        
+
                     BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                         EventType = GameEventType.GameStateEvent,
                         Message   = state
