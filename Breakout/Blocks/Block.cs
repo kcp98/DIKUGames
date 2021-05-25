@@ -1,7 +1,6 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-using DIKUArcade.Events;
 using System.IO;
 
 namespace Breakout.Blocks {
@@ -20,11 +19,7 @@ namespace Breakout.Blocks {
         public virtual void GetHit(){
             if (--health <= 0) {
                 base.DeleteEntity();
-                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                    EventType = GameEventType.GameStateEvent,
-                    Message   = "AddPoints",
-                    IntArg1   = value
-                });
+                Status.GetStatus().AddPoints(value);
             }
         }
     }
