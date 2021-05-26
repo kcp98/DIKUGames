@@ -14,7 +14,7 @@ namespace Breakout.Blocks {
 
                 Random rand = new Random();
                 GameRunning.GetGameRunning().AddPowerUp(
-                    new PowerUp(base.Shape.Position.Copy(), 3)
+                    new PowerUp(base.Shape.Position.Copy(), 4)
                 );
                 base.DeleteEntity();
             }

@@ -17,7 +17,8 @@ namespace Breakout {
             "LifePickUp.png",
             "ExtraBallPowerUp.png",
             "WidePowerUp.png", 
-            "WallPowerUp.png"
+            "WallPowerUp.png",
+            "InfinitePowerUp.png"
         };
 
         private int index;
@@ -37,6 +38,9 @@ namespace Breakout {
                     break;
                 case 3: 
                     GameRunning.GetGameRunning().powerUpWall();
+                    break;
+                case 4:
+                    GameRunning.GetGameRunning().PowerUpInfinite();
                     break;
                 default:
                     System.Console.WriteLine("PowerUp for index {0}, not yet implemented", index);

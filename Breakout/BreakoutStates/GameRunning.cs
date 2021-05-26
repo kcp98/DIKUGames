@@ -26,7 +26,9 @@ namespace Breakout.BreakoutStates {
         private EntityContainer<PowerUp> powerUps = new EntityContainer<PowerUp>();
         private Entity wall = new Entity(new DynamicShape(new Vec2F(0f, 0f), new Vec2F(1f, 0f)), null);
         private Entity wallOveraly;
-        private double seconds = -1;
+        private double wallSeconds = -1;
+        private double infiniteSeconds = -1;
+        private bool infiniteOccupied = false;
 
         /// <summary> Get the GameRunning instance.
         /// If null then first instantiates the instance. </summary>
@@ -47,28 +49,42 @@ namespace Breakout.BreakoutStates {
             );
         }
 
+        #region PowerUps
         public void AddPowerUp(PowerUp powerUp) {
             powerUps.AddEntity(powerUp);
         }
 
-        #region PowerUps
         public void AddPowerUpBall() {
             balls.AddEntity(new Ball());
         }
 
         public void powerUpWall() {
-            seconds = StaticTimer.GetElapsedSeconds() + 10.0;
+            wallSeconds = StaticTimer.GetElapsedSeconds() + 10.0;
         }
 
-         public void PowerUpWallCollision() {
+        public void PowerUpWallCollision() {
             balls.Iterate(ball => {
                 ball.CheckCollision(wall);
             });
-            if (StaticTimer.GetElapsedSeconds() > seconds) {
-                seconds = -1;
+            if (StaticTimer.GetElapsedSeconds() > wallSeconds) {
+                wallSeconds = -1;
             }
         }
 
+        public void PowerUpInfinite() {
+            infiniteSeconds = StaticTimer.GetElapsedSeconds() + 10.0;
+            AddInfiniteBalls();
+        }
+
+        public void AddInfiniteBalls() {
+            if (!infiniteOccupied && infiniteSeconds != -1) {
+                balls.AddEntity(new Ball());
+                infiniteOccupied = true;
+            }
+            if (StaticTimer.GetElapsedSeconds() > infiniteSeconds) {
+                infiniteSeconds = -1;
+            }
+        }
         #endregion
 
 
@@ -89,6 +105,8 @@ namespace Breakout.BreakoutStates {
             }
             player = new Player();
             BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player);
+            wallSeconds = -1;
+            infiniteSeconds = -1;
             powerUps.ClearContainer();
             balls.ClearContainer();
             balls.AddEntity(new Ball());
@@ -109,13 +127,14 @@ namespace Breakout.BreakoutStates {
             if (level.IsFinished()) { NextLevel(); }
             Status.GetStatus().Update();
 
+            AddInfiniteBalls();
             player.Move();
             balls.Iterate(ball => {
                 ball.Move(player);
                 level.blocks.Iterate(block => {
                     if (ball.CheckCollision(block))
                         block.GetHit();
-                    if (seconds != -1) {
+                    if (wallSeconds != -1) {
                         PowerUpWallCollision();
                     }
                 });
@@ -142,7 +161,7 @@ namespace Breakout.BreakoutStates {
             level.Render();
             powerUps.RenderEntities();
             Status.GetStatus().Render();
-            if (seconds != -1)
+            if (wallSeconds != -1)
                 wallOveraly.RenderEntity();
         }
 
@@ -157,6 +176,7 @@ namespace Breakout.BreakoutStates {
                     break;
                 case KeyboardKey.Space:
                     StaticTimer.ResumeTimer();
+                    infiniteOccupied = false;
                     balls.Iterate(ball => {
                         ball.Release();
                     });
