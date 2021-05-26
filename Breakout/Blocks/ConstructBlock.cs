@@ -9,6 +9,8 @@ namespace Breakout.Blocks {
                     return new Unbreakable(pos, extent, filename);
                 case "Hardened":
                     return new Hardened(pos, extent, filename);
+                case "PowerUp":
+                    return new PowerUpBlock(pos, extent, filename);
                 default:
                     return new Block(pos, extent, filename);
             }

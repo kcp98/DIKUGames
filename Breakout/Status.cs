@@ -77,5 +77,13 @@ namespace Breakout {
             livesText.RenderText();
             if (timed) { timeText.RenderText(); }
         }
+
+        #region PowerUps
+        
+        public void ExtraLife() {
+            livesText.SetText(string.Format("Lives: {0}", ++lives));
+        }
+
+        #endregion
     }
 }

@@ -23,6 +23,7 @@ namespace Breakout.BreakoutStates {
         private Player player;
         private ConstructLevel level;
         private EntityContainer<Ball> balls = new EntityContainer<Ball>();
+        private EntityContainer<PowerUp> powerUps = new EntityContainer<PowerUp>();
 
         /// <summary> Get the GameRunning instance.
         /// If null then first instantiates the instance. </summary>
@@ -39,10 +40,17 @@ namespace Breakout.BreakoutStates {
             );
         }
 
+        public void AddPowerUp(PowerUp powerUp) {
+            powerUps.AddEntity(powerUp);
+        }
+
         /// <summary> Advance to next level or main menu.
         /// Resets player, ball and static timer. </summary>
         private void NextLevel() {
-            if (++currentLevel == levels.Count) { Status.GetStatus().EndGame(); }
+            if (++currentLevel == levels.Count) {
+                Status.GetStatus().EndGame();
+                return;
+            }
             try { level = new ConstructLevel(levels[currentLevel]); }
             catch (FileLoadException exception) {
                 System.Console.WriteLine(
@@ -61,9 +69,9 @@ namespace Breakout.BreakoutStates {
 
         /// <summary> Resets the level and status bar. </summary>
         public void ResetState() {
+            Status.GetStatus().Reset();
             currentLevel = -1;
             NextLevel();
-            Status.GetStatus().Reset();
         }
 
         /// <summary> Moves entities and checks for collissions
@@ -79,6 +87,10 @@ namespace Breakout.BreakoutStates {
                     if (ball.CheckCollision(block))
                         block.GetHit();
                 });
+            });
+            powerUps.Iterate(powerUp => {
+                powerUp.Move();
+                powerUp.CheckCollision(player);
             });
             if (balls.CountEntities() == 0) {
                 Status.GetStatus().GetLife();
@@ -96,6 +108,7 @@ namespace Breakout.BreakoutStates {
             player.RenderEntity();
             balls.RenderEntities();
             level.Render();
+            powerUps.RenderEntities();
             Status.GetStatus().Render();
         }
 
