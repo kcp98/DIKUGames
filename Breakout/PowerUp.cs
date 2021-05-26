@@ -4,7 +4,6 @@ using System.IO;
 using DIKUArcade.Entities;
 using System.Collections.Generic;
 using DIKUArcade.Physics;
-using Breakout.BreakoutStates;
 using DIKUArcade.Events;
 
 namespace Breakout {
@@ -14,43 +13,18 @@ namespace Breakout {
         private static Vec2F dir    = new Vec2F(0.00f, -0.005f);
 
         private static List<string> images = new List<string>() {
-            "LifePickUp.png",
-            "ExtraBallPowerUp.png",
-            "WidePowerUp.png", 
-            "WallPowerUp.png",
-            "InfinitePowerUp.png"
+            "LifePickUp",
+            "ExtraBallPowerUp",
+            "WidePowerUp", 
+            "WallPowerUp",
+            "InfinitePowerUp"
         };
 
         private int index;
-        
-        private void ActivatePower() {
-            switch (index) {
-                case 0:
-                    Status.GetStatus().ExtraLife();
-                    break;
-                case 1:
-                    GameRunning.GetGameRunning().AddPowerUpBall();
-                    break;
-                case 2:
-                    BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                        EventType  = GameEventType.PlayerEvent,
-                        Message    = "Wide"});
-                    break;
-                case 3: 
-                    GameRunning.GetGameRunning().powerUpWall();
-                    break;
-                case 4:
-                    GameRunning.GetGameRunning().PowerUpInfinite();
-                    break;
-                default:
-                    System.Console.WriteLine("PowerUp for index {0}, not yet implemented", index);
-                    break;
-            }
-        }
 
         public PowerUp(Vec2F pos, int rand) : base(
             new DynamicShape(pos, extent, dir),
-            new Image(Path.Combine("Assets", "Images", images[rand]))
+            new Image(Path.Combine("Assets", "Images", images[rand] + ".png"))
         ) { index = rand; }
 
         public void Move() {
@@ -65,7 +39,10 @@ namespace Breakout {
                 base.Shape.AsDynamicShape(), entity.Shape
             );
             if (data.Collision) {
-                ActivatePower();
+                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                    EventType = GameEventType.TimedEvent,
+                    Message   = images[index]
+                });
                 base.DeleteEntity();
             }
         }

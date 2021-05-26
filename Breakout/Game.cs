@@ -15,7 +15,8 @@ namespace Breakout {
             BreakoutBus.GetBus().InitializeEventBus(
                 new List<GameEventType> {
                     GameEventType.PlayerEvent,
-                    GameEventType.GameStateEvent
+                    GameEventType.GameStateEvent,
+                    GameEventType.TimedEvent // For power ups
                 }
             );
             stateMachine = new StateMachine();

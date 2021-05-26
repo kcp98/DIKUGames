@@ -52,7 +52,8 @@ namespace Breakout {
             else
                 moveLeft = true;
         }
-        private void WidenPlayer() {
+        
+        public void WidenPlayer() {
             if (seconds == -1) {
                 this.Shape.ScaleXFromCenter(scalar);
                 this.mutableXtent *= scalar;
@@ -79,9 +80,6 @@ namespace Breakout {
                     break;
                 case "Right":
                     SetMoveRight(gameEvent.StringArg1);
-                    break;
-                case "Wide":
-                    WidenPlayer();
                     break;
                 default:
                     break;

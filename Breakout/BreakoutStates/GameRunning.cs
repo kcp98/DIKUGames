@@ -10,7 +10,7 @@ using DIKUArcade.Math;
 using DIKUArcade.Timers;
 
 namespace Breakout.BreakoutStates {
-    public class GameRunning : IGameState {
+    public class GameRunning : IGameState, IGameEventProcessor {
 
         public static GameRunning instance = null;
 
@@ -47,22 +47,20 @@ namespace Breakout.BreakoutStates {
                 new StationaryShape(new Vec2F(0f, 0f), new Vec2F(1f, 1f)),
                 new Image(Path.Combine("Assets", "Images", "Overlay.png"))
             );
+            BreakoutBus.GetBus().Subscribe(GameEventType.TimedEvent, this);
         }
 
-        #region PowerUps
+        #region PowerUps and IGameEventProcessor
+
         public void AddPowerUp(PowerUp powerUp) {
             powerUps.AddEntity(powerUp);
         }
 
-        public void AddPowerUpBall() {
-            balls.AddEntity(new Ball());
-        }
-
-        public void powerUpWall() {
+        private void powerUpWall() {
             wallSeconds = StaticTimer.GetElapsedSeconds() + 10.0;
         }
 
-        public void PowerUpWallCollision() {
+        private void PowerUpWallCollision() {
             balls.Iterate(ball => {
                 ball.CheckCollision(wall);
             });
@@ -71,18 +69,38 @@ namespace Breakout.BreakoutStates {
             }
         }
 
-        public void PowerUpInfinite() {
+        private void PowerUpInfinite() {
             infiniteSeconds = StaticTimer.GetElapsedSeconds() + 10.0;
             AddInfiniteBalls();
         }
 
-        public void AddInfiniteBalls() {
+        private void AddInfiniteBalls() {
             if (!infiniteOccupied && infiniteSeconds != -1) {
                 balls.AddEntity(new Ball());
                 infiniteOccupied = true;
             }
             if (StaticTimer.GetElapsedSeconds() > infiniteSeconds) {
                 infiniteSeconds = -1;
+            }
+        }
+
+        public void ProcessEvent(GameEvent gameEvent) {
+            switch (gameEvent.Message) {
+                case "LifePickUp":
+                    Status.GetStatus().ExtraLife();
+                    break;
+                case "ExtraBallPowerUp":
+                    balls.AddEntity(new Ball());
+                    break;
+                case "WidePowerUp":
+                    player.WidenPlayer();
+                    break;
+                case "WallPowerUp":
+                    powerUpWall();
+                    break;
+                case "InfinitePowerUp":
+                    PowerUpInfinite();
+                    break;
             }
         }
         #endregion
@@ -113,6 +131,8 @@ namespace Breakout.BreakoutStates {
             Status.GetStatus().SetTime(level.Timed, level.Time);
         }
 
+
+        #region IGameState
 
         /// <summary> Resets the level and status bar. </summary>
         public void ResetState() {
@@ -194,5 +214,7 @@ namespace Breakout.BreakoutStates {
                     break;
             }
         }
+        
+        #endregion
     }
 }
