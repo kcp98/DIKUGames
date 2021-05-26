@@ -15,15 +15,18 @@ namespace Breakout {
 
         private static List<string> images = new List<string>() {
             "LifePickUp.png",
+            "ExtraBallPowerUp.png"
         };
 
         private int index;
         
-        /// TODO create gameEvents for the power ups instead maybe :)
         private void ActivatePower() {
             switch (index) {
                 case 0:
                     Status.GetStatus().ExtraLife();
+                    break;
+                case 1:
+                    GameRunning.GetGameRunning().AddPowerUpBall();
                     break;
                 default:
                     System.Console.WriteLine("PowerUp for index {0}, not yet implemented", index);

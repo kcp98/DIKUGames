@@ -15,7 +15,7 @@ namespace Breakout.BreakoutStates {
         public static GameRunning instance = null;
 
         private List<string> levels = new List<string>() {
-            "wall.txt",   "columns.txt", "central-mass.txt",
+            "level4.txt", "wall.txt",   "columns.txt", "central-mass.txt",
             "level1.txt", "level2.txt",  "level3.txt", "level4.txt"
         };
         private Entity background;
@@ -43,6 +43,11 @@ namespace Breakout.BreakoutStates {
         public void AddPowerUp(PowerUp powerUp) {
             powerUps.AddEntity(powerUp);
         }
+
+        public void AddPowerUpBall() {
+            balls.AddEntity(new Ball());
+        }
+
 
         /// <summary> Advance to next level or main menu.
         /// Resets player, ball and static timer. </summary>

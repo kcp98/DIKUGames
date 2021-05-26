@@ -24,7 +24,7 @@ Map/
 Meta:
 Name: LEVEL 4
 Time: 180
-PowerUp: %
+PowerUp: v
 Unbreakable: x
 Hardened: a
 Meta/
