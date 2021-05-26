@@ -19,13 +19,14 @@ namespace Breakout.BreakoutStates {
                     break;
                 case "GamePaused":
                     StaticTimer.PauseTimer();
+                    GamePaused.GetGamePaused().ResetState();
                     ActiveState = GamePaused.GetGamePaused();
                     break;
                 case "MainMenu":
                     ActiveState = MainMenu.GetMainMenu();
                     break;
                 case "GameOver":
-                    GameOver.GetGameOver().SetPoints(gameEvent.IntArg1);
+                    GameOver.GetGameOver().ResetState();
                     ActiveState = GameOver.GetGameOver();
                     break;
                 default:

@@ -6,9 +6,9 @@ using DIKUArcade.Timers;
 namespace Breakout {
     public class Status {
 
-        private static Status instance = null;
+        private static Status instance;
 
-        private int points;
+        public int points { get; private set;}
         private int lives;
         private bool timed = false;
         private double time;
@@ -35,7 +35,6 @@ namespace Breakout {
             BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                 EventType = GameEventType.GameStateEvent,
                 Message   = "GameOver",
-                IntArg1   = points
             });
         }
 

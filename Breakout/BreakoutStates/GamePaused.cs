@@ -6,7 +6,6 @@ using DIKUArcade.Math;
 using System.IO;
 using DIKUArcade.Events;
 
-
 namespace Breakout.BreakoutStates {
     public class GamePaused : IGameState {
 
@@ -36,9 +35,7 @@ namespace Breakout.BreakoutStates {
 
         }
 
-        public override string ToString() {
-            return "Paused";
-        }
+        #region IGameState
 
         /// <summary> Reset the button selection. </summary>
         public void ResetState() {
@@ -47,8 +44,8 @@ namespace Breakout.BreakoutStates {
 
         /// <summary> Color the buttons. Active button red. </summary>
         public void UpdateState() {
-            foreach (Text item in menuButtons) {
-                item.SetColor(System.Drawing.Color.Wheat);
+            foreach (Text menuButton in menuButtons) {
+                menuButton.SetColor(System.Drawing.Color.Wheat);
             }
             menuButtons[activeButton].SetColor(System.Drawing.Color.Red); 
         }
@@ -86,6 +83,13 @@ namespace Breakout.BreakoutStates {
                 default: 
                     break;
             }
+        }
+
+        #endregion
+
+        /// <summary> Overridden to use for window titles. </summary>
+        public override string ToString() {
+            return "Paused";
         }
     }
 }

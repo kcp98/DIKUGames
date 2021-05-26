@@ -3,21 +3,19 @@ using DIKUArcade.Input;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-using System.IO;
 using DIKUArcade.Events;
 using System;
-
+using System.IO;
 
 namespace Breakout.BreakoutStates {
     public class MainMenu : IGameState {
 
-        private static MainMenu instance = null;
+        private static MainMenu instance;
 
         private Entity background;
         private Text[] menuButtons;
         private int activeButton = 0;
 
-        
         /// <summary> Get the MainMenu instance.
         /// If null then first instantiates the instance. </summary>
         public static MainMenu GetMainMenu() {
@@ -26,20 +24,18 @@ namespace Breakout.BreakoutStates {
             );
         }
 
-        public override string ToString() {
-            return "Main Menu";
-        }
-
         private MainMenu() {
             background = new Entity(
                 new StationaryShape(new Vec2F(0f, 0f), new Vec2F(1f, 1f)),
                 new Image(Path.Combine("Assets", "Images", "BreakoutTitleScreen.png"))
             );
             menuButtons = new Text[2]{
-                new Text("NEW GAME", new Vec2F(0.33f, 0.2f), new Vec2F(0.5f, 0.5f)),
-                new Text("QUIT",     new Vec2F(0.33f, 0.1f), new Vec2F(0.5f, 0.5f))
+                new Text("NEW GAME", new Vec2F(0.3f, 0.2f), new Vec2F(0.5f, 0.5f)),
+                new Text("QUIT",     new Vec2F(0.3f, 0.1f), new Vec2F(0.5f, 0.5f))
             };
         }
+
+        #region IGameState
 
         /// <summary> Reset the button selection. </summary>
         public void ResetState() {
@@ -48,8 +44,8 @@ namespace Breakout.BreakoutStates {
 
         /// <summary> Color the buttons. Active button red. </summary>
         public void UpdateState() {
-            foreach (Text item in menuButtons) {
-                item.SetColor(System.Drawing.Color.Wheat);
+            foreach (Text menuButton in menuButtons) {
+                menuButton.SetColor(System.Drawing.Color.Wheat);
             }
             menuButtons[activeButton].SetColor(System.Drawing.Color.Red);
         }
@@ -88,6 +84,13 @@ namespace Breakout.BreakoutStates {
                 default: 
                     break;
             }
+        }
+
+        #endregion
+
+        /// <summary> Overridden to use for window titles. </summary>
+        public override string ToString() {
+            return "Main Menu";
         }
     }
 }

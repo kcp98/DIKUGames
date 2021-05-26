@@ -1,10 +1,10 @@
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
-using System.IO;
 using DIKUArcade.Entities;
-using System.Collections.Generic;
 using DIKUArcade.Physics;
 using DIKUArcade.Events;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Breakout {
     public class PowerUp : Entity {

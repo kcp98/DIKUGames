@@ -12,13 +12,11 @@ namespace Breakout {
 
         public Game(WindowArgs winArgs) : base(winArgs) {
             window.SetKeyEventHandler(KeyHandler);
-            BreakoutBus.GetBus().InitializeEventBus(
-                new List<GameEventType> {
-                    GameEventType.PlayerEvent,
-                    GameEventType.GameStateEvent,
-                    GameEventType.TimedEvent // For power ups
-                }
-            );
+            BreakoutBus.GetBus().InitializeEventBus(new List<GameEventType> {
+                GameEventType.PlayerEvent,
+                GameEventType.GameStateEvent,
+                GameEventType.TimedEvent
+            });
             stateMachine = new StateMachine();
             BreakoutBus.GetBus().Subscribe(GameEventType.GameStateEvent, stateMachine);
         }
@@ -30,11 +28,11 @@ namespace Breakout {
         public override void Update() {
             BreakoutBus.GetBus().ProcessEvents();
             stateMachine.ActiveState.UpdateState();
+            window.Title = "Breakout - " + stateMachine.ActiveState;
         }
 
         public override void Render() {
             stateMachine.ActiveState.RenderState();
-            window.Title = "Breakout - " + stateMachine.ActiveState.ToString();
         }
     }
 }

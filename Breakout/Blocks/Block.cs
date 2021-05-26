@@ -11,15 +11,14 @@ namespace Breakout.Blocks {
         protected string filename;
 
         public Block(Vec2F pos, Vec2F extent, string filename) : base(
-            new DynamicShape(pos, extent), new Image(
-                Path.Combine("Assets", "Images", filename)
-            )){ this.filename = filename; }
+            new DynamicShape(pos, extent),
+            new Image(Path.Combine("Assets", "Images", filename))
+        ) { this.filename = filename; }
 
-
-        public virtual void GetHit(){
-            if (--health <= 0) {
-                base.DeleteEntity();
+        public virtual void GetHit() {
+            if (--health == 0) {
                 Status.GetStatus().AddPoints(value);
+                base.DeleteEntity();
             }
         }
     }

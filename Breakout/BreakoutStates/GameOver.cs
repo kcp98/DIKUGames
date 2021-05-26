@@ -7,7 +7,6 @@ using System.IO;
 using DIKUArcade.Events;
 using System;
 
-
 namespace Breakout.BreakoutStates {
     public class GameOver : IGameState {
 
@@ -17,7 +16,6 @@ namespace Breakout.BreakoutStates {
         private Text[] menuButtons;
         private int activeButton = 1;
 
-        
         /// <summary> Get the MainMenu instance.
         /// If null then first instantiates the instance. </summary>
         public static GameOver GetGameOver() {
@@ -38,18 +36,12 @@ namespace Breakout.BreakoutStates {
             };
         }
 
-        public override string ToString() {
-            return "Game Over";
-        }
+        #region IGameState
 
-        /// <summary> Set a new score. </summary>
-        public void SetPoints(int score) {
-            menuButtons[0].SetText(string.Format("SCORE: {0}", score));
-        }
-
-        /// <summary> Reset the button selection. </summary>
+        /// <summary> Reset the button selection and current score. </summary>
         public void ResetState() {
             activeButton = 1;
+            menuButtons[0].SetText(string.Format("SCORE: {0}", Status.GetStatus().points));
         }
 
         /// <summary> Color the buttons. Active button red. </summary>
@@ -81,18 +73,23 @@ namespace Breakout.BreakoutStates {
                     activeButton = 2;
                     break;
                 case KeyboardKey.Enter:
-                    if (activeButton == 1) {
-                        BreakoutBus.GetBus().RegisterEvent(new GameEvent {
-                            EventType = GameEventType.GameStateEvent,
-                            Message   = "MainMenu"
-                        });
-                    }
-                    else
+                    if (activeButton == 2)
                         Environment.Exit(0);
+                    BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                        EventType = GameEventType.GameStateEvent,
+                        Message   = "MainMenu"
+                    });
                     break;
                 default: 
                     break;
             }
+        }
+
+        #endregion
+
+        /// <summary> Overridden to use for window titles. </summary>
+        public override string ToString() {
+            return "Game Over";
         }
     }
 }

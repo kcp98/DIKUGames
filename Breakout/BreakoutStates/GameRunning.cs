@@ -1,32 +1,37 @@
 using DIKUArcade.State;
 using DIKUArcade.Input;
 using DIKUArcade.Events;
-using System.Collections.Generic;
 using DIKUArcade.Graphics;
-using System.IO;
-using Breakout.LevelLoading;
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using DIKUArcade.Timers;
+using Breakout.LevelLoading;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Breakout.BreakoutStates {
     public class GameRunning : IGameState, IGameEventProcessor {
 
-        public static GameRunning instance = null;
+        public static GameRunning instance;
 
+        private Entity background;
+
+        private ConstructLevel level;
         private List<string> levels = new List<string>() {
             "level4.txt", "wall.txt",   "columns.txt", "central-mass.txt",
             "level1.txt", "level2.txt",  "level3.txt", "level4.txt"
         };
-        private Entity background;
         private int currentLevel;
+
         private Player player;
-        private ConstructLevel level;
         private EntityContainer<Ball> balls = new EntityContainer<Ball>();
+        
         private EntityContainer<PowerUp> powerUps = new EntityContainer<PowerUp>();
+        
         private Entity wall = new Entity(new DynamicShape(new Vec2F(0f, 0f), new Vec2F(1f, 0f)), null);
         private Entity wallOveraly;
         private double wallSeconds = -1;
+        
         private double infiniteSeconds = -1;
         private bool infiniteOccupied = false;
 
@@ -105,7 +110,6 @@ namespace Breakout.BreakoutStates {
         }
         #endregion
 
-
         /// <summary> Advance to next level or main menu.
         /// Resets player, ball and static timer. </summary>
         private void NextLevel() {
@@ -113,12 +117,10 @@ namespace Breakout.BreakoutStates {
                 Status.GetStatus().EndGame();
                 return;
             }
-            try { level = new ConstructLevel(levels[currentLevel]); }
-            catch (FileLoadException exception) {
-                System.Console.WriteLine(
-                    "Skipped {0} level due to the exception: {1}",
-                    levels[currentLevel], exception.Message
-                );
+            try {
+                level = new ConstructLevel(levels[currentLevel]);
+            } catch (FileLoadException exception) {
+                System.Console.WriteLine("Skipped level due to exception: {0}", exception.Message);
                 NextLevel();
             }
             player = new Player();
@@ -130,7 +132,6 @@ namespace Breakout.BreakoutStates {
             balls.AddEntity(new Ball());
             Status.GetStatus().SetTime(level.Timed, level.Time);
         }
-
 
         #region IGameState
 
@@ -167,10 +168,6 @@ namespace Breakout.BreakoutStates {
                 Status.GetStatus().GetLife();
                 balls.AddEntity(new Ball());
             }
-        }
-
-        public override string ToString() {
-            return level.Title;
         }
 
         /// <summary> Render the background, entities and status bar. </summary>
@@ -216,5 +213,10 @@ namespace Breakout.BreakoutStates {
         }
         
         #endregion
+
+        /// <summary> Overridden to use for window titles. </summary>
+        public override string ToString() {
+            return level.Title;
+        }
     }
 }

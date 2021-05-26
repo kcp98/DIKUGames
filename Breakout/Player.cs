@@ -2,8 +2,8 @@ using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Events;
-using System.IO;
 using DIKUArcade.Timers;
+using System.IO;
 
 namespace Breakout {
     public class Player : Entity, IGameEventProcessor {
@@ -40,17 +40,11 @@ namespace Breakout {
         }
 
         private void SetMoveRight(string action) {
-            if (action == "KeyRelease")          
-                moveRight = false;
-            else
-                moveRight = true;
+            moveRight = "KeyRelease" !=  action;
         }
         
         private void SetMoveLeft(string action) {
-            if (action == "KeyRelease")
-                moveLeft = false;
-            else
-                moveLeft = true;
+            moveLeft = "KeyRelease" !=  action;
         }
         
         public void WidenPlayer() {
@@ -61,7 +55,6 @@ namespace Breakout {
             } else {
                 seconds += 10;
             }
-            
         }
 
         private void Unwiden() {
@@ -69,8 +62,7 @@ namespace Breakout {
                 this.Shape.ScaleXFromCenter(1/scalar);
                 this.mutableXtent /= scalar;
                 seconds = -1;
-            } 
-                
+            }
         }
 
         public void ProcessEvent(GameEvent gameEvent) {
@@ -84,7 +76,6 @@ namespace Breakout {
                 default:
                     break;
             }
-
         }
     }
 }

@@ -1,7 +1,7 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Math;
-using System.IO;
 using Breakout.Blocks;
+using System.IO;
 using System.Collections.Generic;
 
 namespace Breakout.LevelLoading {
@@ -17,6 +17,7 @@ namespace Breakout.LevelLoading {
             levelData = new LoadLevelData(Path.Combine("Assets", "Levels", filename));
             blocks    = new EntityContainer<Block>(levelData.mapWidth * levelData.mapHeight);
             PlaceBlocks();
+            
             Timed = levelData.meta.ContainsKey("Time");
             if (Timed) {
                 try { 
