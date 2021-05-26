@@ -24,6 +24,9 @@ namespace Breakout.BreakoutStates {
         private ConstructLevel level;
         private EntityContainer<Ball> balls = new EntityContainer<Ball>();
         private EntityContainer<PowerUp> powerUps = new EntityContainer<PowerUp>();
+        private Entity wall = new Entity(new DynamicShape(new Vec2F(0f, 0f), new Vec2F(1f, 0f)), null);
+        private Entity wallOveraly;
+        private double seconds = -1;
 
         /// <summary> Get the GameRunning instance.
         /// If null then first instantiates the instance. </summary>
@@ -38,15 +41,35 @@ namespace Breakout.BreakoutStates {
                 new StationaryShape(new Vec2F(0f, 0f), new Vec2F(1f, 1f)),
                 new Image(Path.Combine("Assets", "Images", "SpaceBackground.png"))
             );
+            wallOveraly = new Entity(
+                new StationaryShape(new Vec2F(0f, 0f), new Vec2F(1f, 1f)),
+                new Image(Path.Combine("Assets", "Images", "Overlay.png"))
+            );
         }
 
         public void AddPowerUp(PowerUp powerUp) {
             powerUps.AddEntity(powerUp);
         }
 
+        #region PowerUps
         public void AddPowerUpBall() {
             balls.AddEntity(new Ball());
         }
+
+        public void powerUpWall() {
+            seconds = StaticTimer.GetElapsedSeconds() + 10.0;
+        }
+
+         public void PowerUpWallCollision() {
+            balls.Iterate(ball => {
+                ball.CheckCollision(wall);
+            });
+            if (StaticTimer.GetElapsedSeconds() > seconds) {
+                seconds = -1;
+            }
+        }
+
+        #endregion
 
 
         /// <summary> Advance to next level or main menu.
@@ -92,6 +115,9 @@ namespace Breakout.BreakoutStates {
                 level.blocks.Iterate(block => {
                     if (ball.CheckCollision(block))
                         block.GetHit();
+                    if (seconds != -1) {
+                        PowerUpWallCollision();
+                    }
                 });
             });
             powerUps.Iterate(powerUp => {
@@ -116,6 +142,8 @@ namespace Breakout.BreakoutStates {
             level.Render();
             powerUps.RenderEntities();
             Status.GetStatus().Render();
+            if (seconds != -1)
+                wallOveraly.RenderEntity();
         }
 
         /// <summary> Handles key events for moving the player, and pausing the game. </summary>

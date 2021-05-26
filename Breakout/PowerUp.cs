@@ -16,7 +16,8 @@ namespace Breakout {
         private static List<string> images = new List<string>() {
             "LifePickUp.png",
             "ExtraBallPowerUp.png",
-            "WidePowerUp.png"
+            "WidePowerUp.png", 
+            "WallPowerUp.png"
         };
 
         private int index;
@@ -35,7 +36,7 @@ namespace Breakout {
                         Message    = "Wide"});
                     break;
                 case 3: 
-                    
+                    GameRunning.GetGameRunning().powerUpWall();
                     break;
                 default:
                     System.Console.WriteLine("PowerUp for index {0}, not yet implemented", index);
