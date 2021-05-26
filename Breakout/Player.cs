@@ -3,6 +3,7 @@ using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Events;
 using System.IO;
+using DIKUArcade.Timers;
 
 namespace Breakout {
     public class Player : Entity, IGameEventProcessor {
@@ -10,6 +11,10 @@ namespace Breakout {
         private bool moveRight = false;
         private const float speed = 0.012f;
         private const float xtent = 0.15f;
+        private float mutableXtent = 0.15f;
+        private float scalar = 1.5f;
+
+        private double seconds = -1;
 
         public Player() : base(
             new DynamicShape(
@@ -26,11 +31,14 @@ namespace Breakout {
                 );
             if (moveRight)
                 base.Shape.Position.X = System.MathF.Min(
-                    base.Shape.Position.X + speed, 1f - xtent
+                    base.Shape.Position.X + speed, 1f - mutableXtent
                 );
             base.Shape.Move();
+            if (seconds != -1) {
+                Unwiden();
+            }
         }
-        
+
         private void SetMoveRight(string action) {
             if (action == "KeyRelease")          
                 moveRight = false;
@@ -44,6 +52,25 @@ namespace Breakout {
             else
                 moveLeft = true;
         }
+        private void WidenPlayer() {
+            if (seconds == -1) {
+                this.Shape.ScaleXFromCenter(scalar);
+                this.mutableXtent *= scalar;
+                seconds = StaticTimer.GetElapsedSeconds() + 10.0;
+            } else {
+                seconds += 10;
+            }
+            
+        }
+
+        private void Unwiden() {
+            if (StaticTimer.GetElapsedSeconds() > (seconds)) {
+                this.Shape.ScaleXFromCenter(1/scalar);
+                this.mutableXtent /= scalar;
+                seconds = -1;
+            } 
+                
+        }
 
         public void ProcessEvent(GameEvent gameEvent) {
             switch (gameEvent.Message) {
@@ -53,9 +80,13 @@ namespace Breakout {
                 case "Right":
                     SetMoveRight(gameEvent.StringArg1);
                     break;
+                case "Wide":
+                    WidenPlayer();
+                    break;
                 default:
                     break;
             }
+
         }
     }
 }

@@ -66,6 +66,7 @@ namespace Breakout.BreakoutStates {
             }
             player = new Player();
             BreakoutBus.GetBus().Subscribe(GameEventType.PlayerEvent, player);
+            powerUps.ClearContainer();
             balls.ClearContainer();
             balls.AddEntity(new Ball());
             Status.GetStatus().SetTime(level.Timed, level.Time);
