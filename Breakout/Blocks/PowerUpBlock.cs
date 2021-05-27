@@ -1,5 +1,5 @@
 using DIKUArcade.Math;
-using Breakout.BreakoutStates;
+using DIKUArcade.Events;
 using System;
 
 namespace Breakout.Blocks {
@@ -12,9 +12,11 @@ namespace Breakout.Blocks {
         public override void GetHit() {
             if (--health == 0) {
                 Random rand = new Random();
-                GameRunning.GetGameRunning().AddPowerUp(
-                    new PowerUp(base.Shape.Position.Copy(), rand.Next(5))
-                );
+                BreakoutBus.GetBus().RegisterEvent(new GameEvent {
+                    EventType = GameEventType.TimedEvent,
+                    Message   = "AddPowerUp",
+                    ObjectArg1 = new PowerUp(base.Shape.Position.Copy(), rand.Next(5))
+                });
                 Status.GetStatus().AddPoints(value);
                 base.DeleteEntity();
             }

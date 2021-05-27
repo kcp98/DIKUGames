@@ -57,10 +57,6 @@ namespace Breakout.BreakoutStates {
 
         #region PowerUps and IGameEventProcessor
 
-        public void AddPowerUp(PowerUp powerUp) {
-            powerUps.AddEntity(powerUp);
-        }
-
         private void powerUpWall() {
             wallSeconds = StaticTimer.GetElapsedSeconds() + 10.0;
         }
@@ -91,6 +87,10 @@ namespace Breakout.BreakoutStates {
 
         public void ProcessEvent(GameEvent gameEvent) {
             switch (gameEvent.Message) {
+                case "AddPowerUp":
+                    if (gameEvent.ObjectArg1 is PowerUp)
+                        powerUps.AddEntity(gameEvent.ObjectArg1 as PowerUp);
+                    break;
                 case "LifePickUp":
                     Status.GetStatus().ExtraLife();
                     break;
@@ -105,6 +105,8 @@ namespace Breakout.BreakoutStates {
                     break;
                 case "InfinitePowerUp":
                     PowerUpInfinite();
+                    break;
+                default:
                     break;
             }
         }
