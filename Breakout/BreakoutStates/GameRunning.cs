@@ -18,7 +18,7 @@ namespace Breakout.BreakoutStates {
 
         private ConstructLevel level;
         private List<string> levels = new List<string>() {
-            "level4.txt", "wall.txt",   "columns.txt", "central-mass.txt",
+            "wall.txt",   "columns.txt", "central-mass.txt",
             "level1.txt", "level2.txt",  "level3.txt", "level4.txt"
         };
         private int currentLevel;

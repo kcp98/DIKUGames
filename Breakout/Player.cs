@@ -11,7 +11,7 @@ namespace Breakout {
         private bool moveRight = false;
         private const float speed = 0.012f;
         private const float xtent = 0.15f;
-        private float mutableXtent = 0.15f;
+        public float mutableXtent { get{return 0.15f;} set{;} }
         private float scalar = 1.5f;
 
         private double seconds = -1;
