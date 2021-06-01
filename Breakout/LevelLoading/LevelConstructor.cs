@@ -5,16 +5,17 @@ using System.IO;
 using System.Collections.Generic;
 
 namespace Breakout.LevelLoading {
-    public class ConstructLevel {
+    public class LevelConstructor {
 
-        private LoadLevelData levelData;
+        private LevelLoader levelData;
         public EntityContainer<Block> blocks { get; }
         public double Time { get; }
         public bool Timed { get; }
         public string Title { get; }
 
-        public ConstructLevel(string filename) {
-            levelData = new LoadLevelData(Path.Combine("Assets", "Levels", filename));
+        
+        public LevelConstructor(string filename) {
+            levelData = new LevelLoader(Path.Combine("Assets", "Levels", filename));
             blocks    = new EntityContainer<Block>(levelData.mapWidth * levelData.mapHeight);
             PlaceBlocks();
             
@@ -43,7 +44,7 @@ namespace Breakout.LevelLoading {
         
         /// <summary> Place the blocks in the formation given by the levelData's map.
         /// The maps extent in y is 1.0 -> 0.2 and x is 0 -> 1. </summary>
-        private void PlaceBlocks() {
+        private void PlaceBlocks() {            
             float dx = 1f   / levelData.mapWidth;
             float dy = 0.8f / levelData.mapHeight;
             float x = 0f;
@@ -53,7 +54,7 @@ namespace Breakout.LevelLoading {
                 foreach (char c in line) {
                     string block = c.ToString();
                     if (levelData.legend.ContainsKey(block)) {
-                        blocks.AddEntity(ConstructBlock.CreateBlock(
+                        blocks.AddEntity(BlockCreator.CreateBlock(
                             new Vec2F(x, y), new Vec2F(dx, dy),
                             levelData.legend[block],
                             levelData.meta.GetValueOrDefault(block)

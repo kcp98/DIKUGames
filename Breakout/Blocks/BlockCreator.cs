@@ -1,7 +1,7 @@
 using DIKUArcade.Math;
 
 namespace Breakout.Blocks {
-    public static class ConstructBlock {
+    public static class BlockCreator {
 
         public static Block CreateBlock(Vec2F pos, Vec2F extent, string filename, string special) {
             switch (special) {

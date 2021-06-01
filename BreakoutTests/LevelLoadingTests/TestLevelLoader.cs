@@ -5,14 +5,14 @@ using System.IO;
 
 namespace BreakoutTests {
     [TestFixture]
-    public class TestLoadLevelData {
+    public class TestLevelLoader {
 
         [Test] // R.1
         public void TestDifferentMetaData() {
-            LoadLevelData columns = new LoadLevelData(
+            LevelLoader columns = new LevelLoader(
                 Path.Combine( "../../../" + "Assets", "Levels", "columns.txt")
             );
-            LoadLevelData level1 = new LoadLevelData(
+            LevelLoader level1 = new LevelLoader(
                  Path.Combine( "../../../" + "Assets", "Levels", "level1.txt")
             );
 
@@ -22,7 +22,7 @@ namespace BreakoutTests {
 
         [Test] // R.2
         public void TestDataStructures() {
-            LoadLevelData wall = new LoadLevelData(
+            LevelLoader wall = new LevelLoader(
                 Path.Combine( "../../../" + "Assets", "Levels", "wall.txt")
             );
             List<string> expectedMap = new List<string>() {
@@ -52,7 +52,7 @@ namespace BreakoutTests {
         [Test] // R.3
         public void TestErrorHandling() {
             Assert.Throws<System.IO.FileLoadException>(
-                delegate { new LoadLevelData(
+                delegate { new LevelLoader(
                     Path.Combine( "../../../" + "Assets", "Levels", "invalid.txt")
                 ); }
             );

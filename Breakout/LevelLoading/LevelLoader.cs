@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 
 namespace Breakout.LevelLoading {
-    public class LoadLevelData {
+    public class LevelLoader {
 
         private string path;
         public int mapHeight;
@@ -13,7 +13,7 @@ namespace Breakout.LevelLoading {
         public Dictionary<string, string> meta   = new Dictionary<string, string>();
         public Dictionary<string, string> legend = new Dictionary<string, string>();
 
-        public LoadLevelData(string path) {
+        public LevelLoader(string path) {
             this.path = path;
             string[] lines = File.ReadAllLines(path);
             ValidateFile(lines);

@@ -4,6 +4,7 @@ using DIKUArcade.Events;
 using DIKUArcade.Timers;
 
 namespace Breakout {
+    /// <summary> Represents the status of the ongoing game and level. </summary>
     public class Status {
 
         private static Status instance;
@@ -31,6 +32,7 @@ namespace Breakout {
             );
         }
 
+        /// <summary> DRY method for registering gameovers. </summary>
         public void EndGame() {
             BreakoutBus.GetBus().RegisterEvent(new GameEvent {
                 EventType = GameEventType.GameStateEvent,
@@ -43,6 +45,10 @@ namespace Breakout {
             else { livesText.SetText(string.Format("Lives: {0}", lives)); }
         }
 
+        /// <summary> Set the time limit of the current level, and makes sure the Update method
+        /// counts down, and that the Render method renders the remaining time. </summary>
+        /// <param name="includeTime"> Whether or not to include time on current level. </param>
+        /// <param name="timeLimit"> The time limit of the current level. </param>
         public void SetTime(bool includeTime, double timeLimit) {
             timed = includeTime; 
             time = timeLimit;
@@ -50,19 +56,22 @@ namespace Breakout {
             StaticTimer.PauseTimer();
         }
 
+        /// <summary> If current level is timed, then gets the remaining time of the level
+        /// and update the time Text object. </summary>
         public void Update() {
             if (!timed) { return; }
             double remaining = time - StaticTimer.GetElapsedSeconds();
             if (remaining < 0) { EndGame(); }
             timeText.SetText(string.Format("Time: {0:0.0}", remaining));
-            timeText.RenderText();
         }
         
+        /// <summary> Lets a block add points when destroyed. </summary>
         public void AddPoints(int extra) {
             if (extra > 0) {points += extra;}
             pointsText.SetText(string.Format("Score: {0}", points));
         }
 
+        /// <summary> When starting a new game all relevant values should be reset. </summary>
         public void Reset() {
             this.points = 0;
             this.lives  = 3;
@@ -71,6 +80,8 @@ namespace Breakout {
             livesText.SetText("Lives: 3");
         }
 
+        /// <summary> Renders the status bar.
+        /// Includes time only if current level is timed. </summary>
         public void Render() {
             pointsText.RenderText();
             livesText.RenderText();
@@ -79,6 +90,7 @@ namespace Breakout {
 
         #region PowerUps
         
+        /// <summary> Power up for gaining an extra life in current game. </summary>
         public void ExtraLife() {
             livesText.SetText(string.Format("Lives: {0}", ++lives));
         }

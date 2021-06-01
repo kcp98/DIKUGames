@@ -16,7 +16,7 @@ namespace Breakout.BreakoutStates {
 
         private Entity background;
 
-        private ConstructLevel level;
+        private LevelConstructor level;
         private List<string> levels = new List<string>() {
             "level4.txt", "wall.txt",   "columns.txt", "central-mass.txt",
             "level1.txt", "level2.txt",  "level3.txt", "level4.txt"
@@ -120,7 +120,7 @@ namespace Breakout.BreakoutStates {
                 return;
             }
             try {
-                level = new ConstructLevel(levels[currentLevel]);
+                level = new LevelConstructor(levels[currentLevel]);
             } catch (FileLoadException exception) {
                 System.Console.WriteLine("Skipped level due to exception: {0}", exception.Message);
                 NextLevel();
