@@ -10,7 +10,7 @@ namespace Breakout {
         private static Status instance;
 
         public int points { get; private set;}
-        private int lives;
+        public int lives { get; private set;}
         private bool timed = false;
         private double time;
 

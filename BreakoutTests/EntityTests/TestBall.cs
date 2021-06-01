@@ -21,6 +21,7 @@ namespace BreakoutTests {
             ball.Release();
             for (int i = 0; i < 11; i++ ) {
                 ball = new Ball();
+                ball.Release();
                 ball.Move(player);
                 Vec2F dir = ball.Shape.AsDynamicShape().Direction.Copy();
                 Entity entity = new Entity(
