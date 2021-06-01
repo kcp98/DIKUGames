@@ -66,13 +66,21 @@ namespace BreakoutTests {
         public void TestRightSide() {  
             player.ProcessEvent(new GameEvent {
                 EventType  = GameEventType.PlayerEvent,
-                StringArg1 = "PRESS",
-                Message    = "RIGHT"
+                StringArg1 = "KeyPress",
+                Message    = "Right"
             });
             for (int i = 0; i < 100; i++) {
                 player.Move();
             }   
             Assert.LessOrEqual(player.Shape.Position.X, 1f);
+        }
+        
+        [Test]
+        public void TestWidePowerUp() {
+            Assert.AreEqual(0.15, player.mutableXtent, 0.1);
+            //Player size after the powerup.
+            player.WidenPlayer();
+            Assert.AreEqual(0.225,player.mutableXtent, 0.1);
         }
     }
 

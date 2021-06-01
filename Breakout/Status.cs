@@ -71,7 +71,7 @@ namespace Breakout {
             pointsText.SetText(string.Format("Score: {0}", points));
         }
 
-        /// <summary> When starting a new game all relevant values should be reset. </summary>
+        /// <summary> When starting a new game all relevant values should be reset. </summry>
         public void Reset() {
             this.points = 0;
             this.lives  = 3;

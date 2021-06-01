@@ -12,7 +12,6 @@ namespace Breakout.LevelLoading {
         public double Time { get; }
         public bool Timed { get; }
         public string Title { get; }
-
         
         public LevelConstructor(string filename) {
             levelData = new LevelLoader(Path.Combine("Assets", "Levels", filename));

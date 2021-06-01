@@ -2,49 +2,41 @@ using NUnit.Framework;
 using DIKUArcade.Events;
 using Breakout.BreakoutStates; 
 using System.Collections.Generic;
+using DIKUArcade.Entities;
+using DIKUArcade.Math;
 using Breakout;
 
 namespace BreakoutTests {
 
     public class PowerUpTests {
-        private Player player;
-        private StateMachine stateMachine;
-        private GameEventBus eventBus;
+        private Entity entity;
+        private PowerUp powerUp;
 
         [SetUp]
-        public void InitiateGame() {
-            DIKUArcade.GUI.Window.CreateOpenGLContext();   
-            player = new Player ();
-            stateMachine = new StateMachine();
-            eventBus = new GameEventBus();
-            eventBus.InitializeEventBus(new List<GameEventType> {
-                GameEventType.GameStateEvent, GameEventType.PlayerEvent
-            });
-            eventBus.Subscribe(GameEventType.GameStateEvent, stateMachine);
-            eventBus.Subscribe(GameEventType.PlayerEvent, player);
-
-            eventBus.RegisterEvent(new GameEvent {
-                EventType  = GameEventType.GameStateEvent,
-                Message    = "GameRunning"
-            });
+        public void InitiatePowerUp() {
+            powerUp = new PowerUp(new Vec2F(0f, 0.005f),2);
+            entity = new Entity( new DynamicShape(
+                new Vec2F(0,0),
+                new Vec2F(1f,0)
+            ),null);
         }
 
         [Test]
 
-        public void TestLifePickUp() {
-            Status.GetStatus().Reset();
-            // Lives should be 3.
-            Assert.AreEqual(3, Status.GetStatus().lives);
-            Status.GetStatus().ExtraLife();
-            // Lives should be 4.
-            Assert.AreEqual(4, Status.GetStatus().lives);}
+        public void TestDeletion() {
+            powerUp.Move();
+            Assert.AreEqual(false, powerUp.IsDeleted());
+
+            powerUp.Move();
+            Assert.AreEqual(true, powerUp.IsDeleted());
+        }
 
         [Test]
-        public void TestWidePowerUp() {
-            Assert.AreEqual(0.15, player.mutableXtent, 0.1);
-            //Player size after the powerup.
-            player.WidenPlayer();
-            Assert.AreEqual(0.225,player.mutableXtent, 0.1);
+        public void TestCollissions() {
+            powerUp.Move();
+
+            powerUp.CheckCollision(entity);
+            Assert.AreEqual(true, powerUp.IsDeleted());
         }
     }
 }

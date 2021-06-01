@@ -39,6 +39,22 @@ namespace BreakoutTests {
             });
             eventBus.ProcessEventsSequentially();
             Assert.IsInstanceOf<GamePaused>(stateMachine.ActiveState);
+
+            eventBus.RegisterEvent(new GameEvent {
+                EventType  = GameEventType.GameStateEvent,
+                Message    = "GameOver"
+            });
+            eventBus.ProcessEventsSequentially();
+            Assert.IsInstanceOf<GameOver>(stateMachine.ActiveState);
+
+            eventBus.RegisterEvent(new GameEvent {
+                EventType  = GameEventType.GameStateEvent,
+                Message    = "MainMenu"
+            });
+            eventBus.ProcessEventsSequentially();
+            Assert.IsInstanceOf<MainMenu>(stateMachine.ActiveState);
+
+
         }
     }
 }
