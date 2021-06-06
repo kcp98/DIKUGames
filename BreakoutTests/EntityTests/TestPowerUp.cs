@@ -1,24 +1,17 @@
 using NUnit.Framework;
-using DIKUArcade.Events;
-using Breakout.BreakoutStates; 
-using System.Collections.Generic;
-using DIKUArcade.Entities;
 using DIKUArcade.Math;
 using Breakout;
 
 namespace BreakoutTests {
 
     public class PowerUpTests {
-        private Entity entity;
         private PowerUp powerUp;
+        private Player player;
 
         [SetUp]
         public void InitiatePowerUp() {
-            powerUp = new PowerUp(new Vec2F(0f, 0.005f),2);
-            entity = new Entity( new DynamicShape(
-                new Vec2F(0,0),
-                new Vec2F(1f,0)
-            ),null);
+            powerUp = new PowerUp(new Vec2F(0.5f, 0.085f), 2);
+            player = new Player();
         }
 
         [Test]
@@ -27,7 +20,10 @@ namespace BreakoutTests {
             powerUp.Move();
             Assert.AreEqual(false, powerUp.IsDeleted());
 
-            powerUp.Move();
+            for (int i = 0; i < 100; i++)  {
+                powerUp.Move();
+            }
+
             Assert.AreEqual(true, powerUp.IsDeleted());
         }
 
@@ -35,8 +31,16 @@ namespace BreakoutTests {
         public void TestCollissions() {
             powerUp.Move();
 
-            powerUp.CheckCollision(entity);
+            powerUp.CheckCollision(player);
             Assert.AreEqual(true, powerUp.IsDeleted());
+        }
+
+        [Test]
+        public void TestMovement() {
+            Vec2F startPos = powerUp.Shape.Position.Copy();
+            powerUp.Move();
+            Assert.AreEqual(powerUp.Shape.Position.X, startPos.X);
+            Assert.Less(powerUp.Shape.Position.Y, startPos.Y);
         }
     }
 }

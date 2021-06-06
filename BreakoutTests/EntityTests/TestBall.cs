@@ -45,5 +45,44 @@ namespace BreakoutTests {
                 Assert.AreNotEqual(ball.Shape.AsDynamicShape().Direction.Y, 0f);
             }
         }
+
+        [Test]
+        public void TestFollowsPlayer() {
+
+            Vec2F startPost = ball.Shape.Position.Copy();
+
+            player.Shape.MoveX(0.2f);
+            ball.Move(player);
+
+            Assert.AreNotEqual(ball.Shape.Position, startPost);
+
+            ball.Release();
+
+            startPost = ball.Shape.Position.Copy();
+
+            player.Shape.MoveX(0.2f);
+            ball.Move(player);
+
+            Assert.AreEqual(ball.Shape.Position.X, startPost.X);
+  
+        }
+        
+        [Test]
+        public void TestLeavesBottom() {
+            ball.Release();
+            ball.Move(player);
+            Vec2F dir = ball.Shape.AsDynamicShape().Direction.Copy();
+            Entity entity = new Entity(
+                new DynamicShape(
+                    new Vec2F(-0.095f, 0.115f),
+                    new Vec2F(0.1f, 0.1f)
+                ), null
+            );
+            ball.CheckCollision(entity);
+            for (int i = 0; i < 100; i++ ) {
+                ball.Move(player);
+            }
+            Assert.AreEqual(true, ball.IsDeleted());    
+        }
     }
 }

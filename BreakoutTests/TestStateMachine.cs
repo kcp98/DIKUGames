@@ -3,6 +3,7 @@ using Breakout;
 using NUnit.Framework;
 using DIKUArcade.Events;
 using System.Collections.Generic;
+using DIKUArcade.State;
 
 namespace BreakoutTests {
 
@@ -23,8 +24,9 @@ namespace BreakoutTests {
         }
         
         [Test]
-        public void TestStateSwitches() {
+        public void TestStateSwitchesAndInterfaceImplementations() {
             Assert.IsInstanceOf<MainMenu>(stateMachine.ActiveState);
+            Assert.IsInstanceOf<IGameState>(stateMachine.ActiveState);
 
             eventBus.RegisterEvent(new GameEvent {
                 EventType  = GameEventType.GameStateEvent,
@@ -32,6 +34,7 @@ namespace BreakoutTests {
             });
             eventBus.ProcessEventsSequentially();
             Assert.IsInstanceOf<GameRunning>(stateMachine.ActiveState);
+            Assert.IsInstanceOf<IGameState>(stateMachine.ActiveState);
 
             eventBus.RegisterEvent(new GameEvent {
                 EventType  = GameEventType.GameStateEvent,
@@ -39,6 +42,7 @@ namespace BreakoutTests {
             });
             eventBus.ProcessEventsSequentially();
             Assert.IsInstanceOf<GamePaused>(stateMachine.ActiveState);
+            Assert.IsInstanceOf<IGameState>(stateMachine.ActiveState);
 
             eventBus.RegisterEvent(new GameEvent {
                 EventType  = GameEventType.GameStateEvent,
@@ -46,6 +50,7 @@ namespace BreakoutTests {
             });
             eventBus.ProcessEventsSequentially();
             Assert.IsInstanceOf<GameOver>(stateMachine.ActiveState);
+            Assert.IsInstanceOf<IGameState>(stateMachine.ActiveState);
 
             eventBus.RegisterEvent(new GameEvent {
                 EventType  = GameEventType.GameStateEvent,

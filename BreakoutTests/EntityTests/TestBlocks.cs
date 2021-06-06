@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using DIKUArcade.Math;
 using Breakout.Blocks;
+using DIKUArcade.Entities;
 
 namespace BreakoutTests {
     [TestFixture]
@@ -78,5 +79,17 @@ namespace BreakoutTests {
             Assert.AreEqual(false, unbreakableBlock.IsDeleted());        
         }
 
+        [Test]
+        public void BlockIsEntity(){
+
+            defaultBlock = new Block(
+                new Vec2F(0.7f, 0.3f),
+                new Vec2F(0.7f, 0.3f),
+                "green-block.png");
+
+            defaultBlock.GetHit();
+
+            Assert.IsInstanceOf<Entity>(defaultBlock);        
+        }
     }
 }

@@ -34,9 +34,9 @@ namespace Breakout {
         }
 
         /// <summary> Checks collision with player. </summary>        
-        public void CheckCollision(Entity entity) {
+        public void CheckCollision(Player player) {
             CollisionData data = CollisionDetection.Aabb(
-                base.Shape.AsDynamicShape(), entity.Shape
+                base.Shape.AsDynamicShape(), player.Shape
             );
             if (data.Collision) {
                 BreakoutBus.GetBus().RegisterEvent(new GameEvent {

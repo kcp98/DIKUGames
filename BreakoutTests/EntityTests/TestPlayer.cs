@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using Breakout;
 using DIKUArcade.Events;
+using DIKUArcade.Entities;
 
 namespace BreakoutTests {
     [TestFixture]
@@ -82,6 +83,12 @@ namespace BreakoutTests {
             player.WidenPlayer();
             Assert.AreEqual(0.225,player.mutableXtent, 0.1);
         }
-    }
 
+        [Test]
+        // Testing that the player is an entity and is rectangular
+        public void ShapeTest() {
+            Assert.IsInstanceOf<Entity>(player);
+            Assert.Greater(player.Shape.Extent.X, player.Shape.Extent.Y);
+        }
+    }
 }
