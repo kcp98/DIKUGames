@@ -15,7 +15,6 @@ namespace Breakout {
         private float scalar = 1.5f;
 
         private double seconds = -1;
-
         public Player() : base(
             new DynamicShape(
                 new Vec2F(-xtent / 2 + 0.5f, 0.05f),
@@ -23,7 +22,7 @@ namespace Breakout {
             ),
             new Image(Path.Combine("Assets", "Images", "player.png"))
         ) {}
-        
+        /// <summary> Checks collision with player. </summary>      
         public void Move() {
             if (moveLeft)
                 base.Shape.Position.X = System.MathF.Max(
@@ -64,7 +63,7 @@ namespace Breakout {
                 seconds = -1;
             }
         }
-
+        
         public void ProcessEvent(GameEvent gameEvent) {
             switch (gameEvent.Message) {
                 case "Left":

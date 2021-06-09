@@ -10,6 +10,7 @@ namespace Breakout.Blocks {
             base.value *= 2;
         }
 
+        /// <summary> Changes the image of the block when hit</summary>  
         private void ChangeImage(){
             base.Image = new Image(Path.Combine(
                 "Assets", "Images", base.filename.Insert(filename.IndexOf("."), "-damaged")

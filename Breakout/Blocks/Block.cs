@@ -15,6 +15,8 @@ namespace Breakout.Blocks {
             new Image(Path.Combine("Assets", "Images", filename))
         ) { this.filename = filename; }
 
+        /// <summary> If the block is hit the method decrements the health, deletes the
+        /// block and add points</summary>  
         public virtual void GetHit() {
             if (--health == 0) {
                 Status.GetStatus().AddPoints(value);
