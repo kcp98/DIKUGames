@@ -27,6 +27,8 @@ namespace Breakout {
             new Image(Path.Combine("Assets", "Images", images[rand] + ".png"))
         ) { index = rand; }
 
+        /// <summary> Moves the created powerup 
+        ///straight downwards from its creation position</summary>
         public void Move() {
             base.Shape.Move();
             if (base.Shape.Position.Y < 0)

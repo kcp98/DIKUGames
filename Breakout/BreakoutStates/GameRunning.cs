@@ -57,10 +57,14 @@ namespace Breakout.BreakoutStates {
 
         #region PowerUps and IGameEventProcessor
 
+        /// <summary> Sets the time for the wall to be up 
+        /// when the wall powerup is collected </summary>
         private void powerUpWall() {
             wallSeconds = StaticTimer.GetElapsedSeconds() + 10.0;
         }
 
+        /// <summary> Checks for collision beetween the balls and 
+        /// the newly avtivated bottom boundary, the wall </summary>
         private void PowerUpWallCollision() {
             balls.Iterate(ball => {
                 ball.CheckCollision(wall);
@@ -70,11 +74,17 @@ namespace Breakout.BreakoutStates {
             }
         }
 
+        /// <summary> Sets the time for the ability to have 
+        /// infite amount of balls when the infinite balls
+        /// powerup is collected </summary>
         private void PowerUpInfinite() {
             infiniteSeconds = StaticTimer.GetElapsedSeconds() + 10.0;
             AddInfiniteBalls();
         }
 
+        /// <summary> Adds a new ball to be released if the 
+        /// infinite balls powerup is activated and if there
+        /// is no other ball not released </summary>
         private void AddInfiniteBalls() {
             if (!infiniteOccupied && infiniteSeconds != -1) {
                 balls.AddEntity(new Ball());
@@ -85,6 +95,8 @@ namespace Breakout.BreakoutStates {
             }
         }
 
+        /// <summary> Processes the powerup game event sent out by 
+        /// the powerup class </summary>
         public void ProcessEvent(GameEvent gameEvent) {
             switch (gameEvent.Message) {
                 case "AddPowerUp":
