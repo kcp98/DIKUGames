@@ -15,7 +15,6 @@ namespace BreakoutTests {
         }
 
         [Test]
-
         public void TestDeletion() {
             powerUp.Move();
             Assert.AreEqual(false, powerUp.IsDeleted());

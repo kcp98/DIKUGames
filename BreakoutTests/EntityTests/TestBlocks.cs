@@ -25,7 +25,6 @@ namespace BreakoutTests {
 
         [Test]
         public void DestroyingDefaul(){
-
             defaultBlock = new Block(
                 new Vec2F(0.7f, 0.3f),
                 new Vec2F(0.7f, 0.3f),
@@ -48,6 +47,7 @@ namespace BreakoutTests {
 
             Assert.AreEqual(false, hardendBlock.IsDeleted());        
         }
+
         [Test]
         public void HardenedBlockTwoHits(){
             hardendBlock = new Hardened(
@@ -59,8 +59,7 @@ namespace BreakoutTests {
             hardendBlock.GetHit();
             hardendBlock.GetHit();
 
-            Assert.AreEqual(true, hardendBlock.IsDeleted());        
-            
+            Assert.AreEqual(true, hardendBlock.IsDeleted());         
         }
 
         [Test]
@@ -81,7 +80,6 @@ namespace BreakoutTests {
 
         [Test]
         public void BlockIsEntity(){
-
             defaultBlock = new Block(
                 new Vec2F(0.7f, 0.3f),
                 new Vec2F(0.7f, 0.3f),

@@ -35,6 +35,7 @@ namespace BreakoutTests {
             player.Move();
             Assert.Greater(player.Shape.Position.X, before);
         }
+        
         [Test]
         // Testing that the player can move using the right/left arrows or the a/d keys.
         public void TestMoveLeft() {        

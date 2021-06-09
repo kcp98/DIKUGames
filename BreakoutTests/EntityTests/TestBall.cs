@@ -4,6 +4,7 @@ using DIKUArcade.Entities;
 using DIKUArcade.Math;
 
 namespace BreakoutTests {
+    
     [TestFixture]
     public class BallTesting {
         Ball ball;
@@ -48,23 +49,21 @@ namespace BreakoutTests {
 
         [Test]
         public void TestFollowsPlayer() {
-
-            Vec2F startPost = ball.Shape.Position.Copy();
+            Vec2F startPos = ball.Shape.Position.Copy();
 
             player.Shape.MoveX(0.2f);
             ball.Move(player);
 
-            Assert.AreNotEqual(ball.Shape.Position, startPost);
+            Assert.AreNotEqual(ball.Shape.Position, startPos);
 
             ball.Release();
 
-            startPost = ball.Shape.Position.Copy();
+            startPos = ball.Shape.Position.Copy();
 
             player.Shape.MoveX(0.2f);
             ball.Move(player);
 
-            Assert.AreEqual(ball.Shape.Position.X, startPost.X);
-  
+            Assert.AreEqual(ball.Shape.Position.X, startPos.X);
         }
         
         [Test]

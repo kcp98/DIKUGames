@@ -1,5 +1,4 @@
 using Breakout.BreakoutStates;
-using Breakout;
 using NUnit.Framework;
 using DIKUArcade.Events;
 using System.Collections.Generic;
@@ -58,8 +57,6 @@ namespace BreakoutTests {
             });
             eventBus.ProcessEventsSequentially();
             Assert.IsInstanceOf<MainMenu>(stateMachine.ActiveState);
-
-
         }
     }
 }

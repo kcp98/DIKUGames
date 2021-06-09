@@ -17,8 +17,8 @@ namespace BreakoutTests {
 
             Status.GetStatus().Reset();
             Assert.AreEqual(0, Status.GetStatus().points);
-
         }
+
         [Test]
         public void TestLives() {
             Status.GetStatus().Reset();
@@ -29,8 +29,6 @@ namespace BreakoutTests {
 
             Status.GetStatus().GetLife();
             Assert.AreEqual(3, Status.GetStatus().lives);
-
         }
-
     }
 }
